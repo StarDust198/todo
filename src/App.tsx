@@ -1,4 +1,4 @@
-import './App.css';
+import './scss/app.scss';
 import TaskFilters from './components/TaskFilters';
 import TaskList from './components/TaskList';
 import TaskDetails from './components/TaskDetails';
