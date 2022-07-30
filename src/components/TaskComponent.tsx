@@ -5,6 +5,7 @@ interface TaskComponentProps {
   completed?: boolean;
   tags?: string[];
   date?: Date | null;
+  // id:
 }
 
 const TaskComponent: FC<TaskComponentProps> = ({
@@ -20,7 +21,7 @@ const TaskComponent: FC<TaskComponentProps> = ({
   };
 
   return (
-    <li className="task">
+    <li className="task flex justify-between">
       <div>
         <input
           className="task-checkbox"
