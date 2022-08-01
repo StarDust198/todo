@@ -1,11 +1,14 @@
 import { FC, useState } from 'react';
+import Checkbox from './Checkbox';
+import TagComponent from './TagComponent';
 
 interface TaskComponentProps {
   title: string;
   completed?: boolean;
   tags?: string[];
   date?: Date | null;
-  // id:
+  id: number;
+  selected?: boolean;
 }
 
 const TaskComponent: FC<TaskComponentProps> = ({
@@ -13,6 +16,8 @@ const TaskComponent: FC<TaskComponentProps> = ({
   completed = false,
   tags = [],
   date = null,
+  id,
+  selected = false,
 }) => {
   const [checked, setChecked] = useState(completed);
 
@@ -20,22 +25,21 @@ const TaskComponent: FC<TaskComponentProps> = ({
     setChecked((checked) => !checked);
   };
 
+  const taskClass = `flex py-1 justify-between text-sm border-b border-slate-500 ${
+    selected ? 'bg-slate-600' : 'hover:bg-slate-700'
+  }`;
+
   return (
-    <li className="task flex justify-between">
-      <div>
-        <input
-          className="task-checkbox"
-          type="checkbox"
-          checked={checked}
-          onChange={onCheck}
-        />
-        <span className="task-title">{title}</span>
+    <li className={taskClass}>
+      <div className="flex gap-1 items-center">
+        <Checkbox id={id} />
+        <span>{title}</span>
       </div>
-      <div>
+      <div className="flex gap-1 items-center">
         {tags.map((item) => (
-          <span className="task-tag">{item}</span>
+          <TagComponent key={item} tagName={item} />
         ))}
-        {date && <span className="task-date">date</span>}
+        {date && <span>date</span>}
       </div>
     </li>
   );

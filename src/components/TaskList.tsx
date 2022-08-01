@@ -17,18 +17,45 @@ const TaskList: FC<TaskListProps> = () => {
       </div>
       <h3>Overdue:</h3>
       <ul>
-        <TaskComponent title="main task" tags={['main']} />
-        <TaskComponent title="very main task" tags={['main']} />
+        <TaskComponent
+          selected
+          title="main task"
+          tags={['main']}
+          id={1231121222412}
+        />
+        <TaskComponent
+          title="very main task"
+          tags={['main']}
+          id={12313332412}
+        />
       </ul>
       <h3>Incoming:</h3>
       <ul>
-        <TaskComponent title="important task" tags={['important']} />
-        <TaskComponent title="not so important task" tags={[]} />
+        <TaskComponent
+          title="important task"
+          tags={['important']}
+          id={123122123412}
+        />
+        <TaskComponent
+          title="not so important task"
+          tags={[]}
+          id={12312123412}
+        />
       </ul>
       <h3>Completed:</h3>
       <ul>
-        <TaskComponent title="completed task" completed tags={['important']} />
-        <TaskComponent title="just a task" completed tags={[]} />
+        <TaskComponent
+          title="completed task"
+          completed
+          tags={['important']}
+          id={12312412}
+        />
+        <TaskComponent
+          title="just a task"
+          completed
+          tags={[]}
+          id={123123123412}
+        />
       </ul>
     </div>
   );

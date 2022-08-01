@@ -1,18 +1,25 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { ReactComponent as Checked } from '../assets/checkbox.svg';
 import { ReactComponent as Unchecked } from '../assets/unchecked.svg';
 
-const Checkbox = () => {
-  const [checked, setChecked] = useState(false);
+interface CheckboxProps {
+  id: number;
+  isChecked?: boolean;
+}
+
+const Checkbox: FC<CheckboxProps> = ({ id, isChecked = false }) => {
+  const [checked, setChecked] = useState(isChecked);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setChecked(e.target.checked);
   };
 
+  const cbId = `task${id}`;
+
   return (
     <>
-      <input id="task" className="hidden" type="checkbox" onChange={onChange} />
-      <label htmlFor="task">
+      <input id={cbId} className="hidden" type="checkbox" onChange={onChange} />
+      <label className="inline-block" htmlFor={cbId}>
         {/*  */}
         {checked ? (
           <Checked className="h-6 w-6" />

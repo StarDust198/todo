@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       gridTemplateColumns: {
-        'base': '2fr 3fr 3fr'
+        'base': '1fr 2fr 1fr'
       }
     },
   },
