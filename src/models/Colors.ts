@@ -1,0 +1,15 @@
+export enum Colors {
+  YELLOW = 'yellow-800',
+  AMBER = 'amber-800',
+  LIME = 'lime-800',
+  GREEN = 'green-800',
+  EMERALD = 'emerald-800',
+  TEAL = 'teal-800',
+  CYAN = 'cyan-800',
+  SKY = 'sky-800',
+  BLUE = 'blue-800',
+  INDIGO = 'indigo-800',
+  VIOLET = 'violet-800',
+  PURPLE = 'purple-800',
+  FUCHSIA = 'fuchsia-800',
+}
