@@ -33,9 +33,9 @@ export class Task {
     this.date = newDate;
   }
 
-  addTag(newTagName: string): void {
+  addTag(newTag: string): void {
     if (!this.tags.some((tag) => tag === newTag))
-      this.tags = [...this.tags, newTagName];
+      this.tags = [...this.tags, newTag];
   }
 
   removeTag(tagName: string): void {

@@ -1,9 +1,10 @@
-import { FC, ReactNode } from 'react';
+import { DetailedHTMLProps, FC, HTMLAttributes, ReactNode } from 'react';
 
-interface FilterProps {
+interface FilterProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
   title: string;
   children?: ReactNode | null;
-  color?: string | null;
+  tagColor?: string | null;
   total: number;
   selected?: boolean;
 }
@@ -11,23 +12,26 @@ interface FilterProps {
 const FilterComponent: FC<FilterProps> = ({
   title,
   children = null,
-  color = null,
+  tagColor = null,
   total = 123,
   selected = false,
+  ...props
 }) => {
   const filterClass = `flex py-2 justify-between rounded ${
     selected ? 'bg-slate-600' : 'hover:bg-slate-700'
   }`;
 
   return (
-    <li className={filterClass}>
-      <div className="flex gap-1 align-middle">
+    <li className={filterClass} {...props}>
+      <div className="flex gap-1">
         {children}
         {title}
       </div>
-      <div className="flex gap-1 align-middle pr-1">
-        {color && color}
-        <span className="text-xs">{total}</span>
+      <div className="flex w-10 justify-between items-center flex-row-reverse">
+        <div className="text-xs">{total}</div>
+        {tagColor && (
+          <div className={`w-2.5 h-2.5 rounded-full ${tagColor}`}></div>
+        )}
       </div>
     </li>
   );
