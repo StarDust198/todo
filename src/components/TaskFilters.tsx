@@ -8,14 +8,17 @@ import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import FilterComponent from './FilterComponent';
 
 const tags = ['importantTag', 'mainTag', 'notImportantTag'];
+const filterBase = {};
 
 interface TaskFiltersProps {}
 
 const TaskFilters: FC<TaskFiltersProps> = () => {
   const [selectedFilter, setSelectedFilter] = useState('_today');
 
-  // e: MouseEvent<HTMLLIElement>,
-  function onChangeFilter() {}
+  const onChangeFilter = (e: MouseEvent<HTMLLIElement>) => {
+    const liElement: HTMLLIElement = e.currentTarget;
+    setSelectedFilter(liElement.id);
+  };
 
   return (
     <div className="px-4 py-4 bg-slate-800 flex flex-col">
@@ -25,14 +28,26 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
           onClick={onChangeFilter}
           title="Today"
           total={123}
-          selected
+          selected={selectedFilter === '_today'}
         >
           <TodayIcon />
         </FilterComponent>
-        <FilterComponent id="_week" title="Next 7 days" total={123}>
+        <FilterComponent
+          id="_week"
+          onClick={onChangeFilter}
+          title="Next 7 days"
+          total={123}
+          selected={selectedFilter === '_week'}
+        >
           <CalendarIcon />
         </FilterComponent>
-        <FilterComponent id="_incoming" title="Incoming" total={123}>
+        <FilterComponent
+          id="_incoming"
+          onClick={onChangeFilter}
+          title="Incoming"
+          total={123}
+          selected={selectedFilter === '_incoming'}
+        >
           <IncomingIcon />
         </FilterComponent>
       </ul>
@@ -45,6 +60,8 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
               key={`${tag}-filter`}
               total={321}
               id={tag}
+              onClick={onChangeFilter}
+              selected={selectedFilter === tag}
             >
               <TagIcon className="w-4" />
             </FilterComponent>
@@ -52,10 +69,22 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
         </ul>
       )}
       <ul className="py-2">
-        <FilterComponent id="_completed" title="Completed" total={111}>
+        <FilterComponent
+          id="_completed"
+          onClick={onChangeFilter}
+          title="Completed"
+          total={111}
+          selected={selectedFilter === '_completed'}
+        >
           <CompletedIcon />
         </FilterComponent>
-        <FilterComponent id="_deleted" title="Deleted" total={111}>
+        <FilterComponent
+          id="_deleted"
+          onClick={onChangeFilter}
+          title="Deleted"
+          total={111}
+          selected={selectedFilter === '_deleted'}
+        >
           <TrashIcon />
         </FilterComponent>
       </ul>

@@ -1,13 +1,14 @@
-import { FC, useState } from 'react';
+import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import Checkbox from './Checkbox';
 import TagComponent from './TagComponent';
 
-interface TaskComponentProps {
+interface TaskComponentProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
   title: string;
   completed?: boolean;
   tags?: string[];
   date?: Date | null;
-  id: number;
+  taskId: number;
   selected?: boolean;
 }
 
@@ -16,23 +17,18 @@ const TaskComponent: FC<TaskComponentProps> = ({
   completed = false,
   tags = [],
   date = null,
-  id,
+  taskId,
   selected = false,
+  ...props
 }) => {
-  const [checked, setChecked] = useState(completed);
-
-  const onCheck = () => {
-    setChecked((checked) => !checked);
-  };
-
   const taskClass = `flex py-1 justify-between text-sm border-b border-slate-500 ${
     selected ? 'bg-slate-600' : 'hover:bg-slate-700'
-  }`;
+  } ${completed && ' opacity-30'}`;
 
   return (
-    <li className={taskClass}>
+    <li className={taskClass} {...props}>
       <div className="flex gap-1 items-center">
-        <Checkbox id={id} />
+        <Checkbox id={taskId} isChecked={completed} />
         <span>{title}</span>
       </div>
       <div className="flex gap-1 items-center">

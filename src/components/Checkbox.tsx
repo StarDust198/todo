@@ -20,7 +20,6 @@ const Checkbox: FC<CheckboxProps> = ({ id, isChecked = false }) => {
     <>
       <input id={cbId} className="hidden" type="checkbox" onChange={onChange} />
       <label className="inline-block" htmlFor={cbId}>
-        {/*  */}
         {checked ? (
           <Checked className="h-6 w-6" />
         ) : (
