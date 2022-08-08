@@ -1,4 +1,5 @@
 import { FC, useState, MouseEvent } from 'react';
+
 import { ReactComponent as TagIcon } from '../assets/tag.svg';
 import { ReactComponent as CalendarIcon } from '../assets/calendar.svg';
 import { ReactComponent as IncomingIcon } from '../assets/incoming.svg';
@@ -7,15 +8,18 @@ import { ReactComponent as CompletedIcon } from '../assets/completed.svg';
 import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import FilterComponent from './FilterComponent';
 import { useTodos } from '../hooks/useTodos';
-
-const tags = ['importantTag', 'mainTag', 'notImportantTag'];
-const filterBase = {};
+import { ITag } from '../models/Tag';
 
 interface TaskFiltersProps {}
 
 const TaskFilters: FC<TaskFiltersProps> = () => {
   const [selectedFilter, setSelectedFilter] = useState('_today');
-  const { loading, error, tags, addTag } = useTodos();
+  const {
+    // loading,
+    // error,
+    items: tags,
+    // addItem: addTag,
+  } = useTodos<ITag>('tags');
 
   const onChangeFilter = (e: MouseEvent<HTMLLIElement>) => {
     const liElement: HTMLLIElement = e.currentTarget;
@@ -59,7 +63,7 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
             <FilterComponent
               tagColor={tag.color}
               title={tag.title}
-              key={`${tag}-filter`}
+              key={`${tag.title}-filter`}
               total={321}
               id={tag.title}
               onClick={onChangeFilter}

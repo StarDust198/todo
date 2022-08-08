@@ -8,7 +8,7 @@ export interface ITask {
   description?: string;
   completed: boolean;
   deleted?: boolean;
-  tags: string[];
+  tags: ITag[];
   timeMatches: boolean;
 }
 
@@ -28,7 +28,7 @@ export class Task implements ITask {
   description: string;
   completed: boolean;
   deleted: boolean;
-  tags: string[];
+  tags: ITag[];
   timeMatches: boolean;
 
   constructor(
@@ -37,7 +37,7 @@ export class Task implements ITask {
     time: boolean = false,
     completed: boolean = false,
     deleted: boolean = false,
-    tags: string[] = [],
+    tags: ITag[] = [],
     timeMatches: boolean = true
   ) {
     this.id = new Date().getTime();
@@ -59,13 +59,13 @@ export class Task implements ITask {
     this.date = newDate;
   }
 
-  addTag(newTag: string): void {
+  addTag(newTag: ITag): void {
     if (!this.tags.some((tag) => tag === newTag))
       this.tags = [...this.tags, newTag];
   }
 
   removeTag(tagName: string): void {
-    this.tags = this.tags.filter((tag) => tag !== tagName);
+    this.tags = this.tags.filter((tag) => tag.title !== tagName);
   }
 
   addDescription(newDescr: string): void {

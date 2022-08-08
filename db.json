@@ -7,42 +7,45 @@
   "tasks": [
     {
       "title": "main task",
-      "tags": ["main"],
+      "tags": [{ "title": "main", "color": "bg-emerald-800" }],
       "id": 123214124124,
       "completed": false,
       "timeMatches": false
     },
     {
       "title": "main task2",
-      "tags": ["main"],
+      "tags": [{ "title": "main", "color": "bg-emerald-800" }],
       "id": 123446214124124,
       "completed": false,
       "timeMatches": false
     },
     {
       "title": "main task3",
-      "tags": ["best"],
+      "tags": [{ "title": "best", "color": "bg-blue-800" }],
       "id": 1235464214124124,
       "completed": false,
       "timeMatches": true
     },
     {
       "title": "main task4",
-      "tags": ["important"],
+      "tags": [{ "title": "important", "color": "bg-teal-800" }],
       "id": 12321412465124,
       "completed": false,
       "timeMatches": true
     },
     {
       "title": "main task5",
-      "tags": ["main", "important"],
+      "tags": [
+        { "title": "main", "color": "bg-emerald-800" },
+        { "title": "important", "color": "bg-teal-800" }
+      ],
       "id": 122433214124124,
       "completed": false,
       "timeMatches": true
     },
     {
       "title": "main task6",
-      "tags": ["important"],
+      "tags": [{ "title": "important", "color": "bg-teal-800" }],
       "id": 12321412442124,
       "completed": true,
       "timeMatches": true

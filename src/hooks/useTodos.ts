@@ -1,48 +1,27 @@
 import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
-import { ITag } from '../models/Tag';
-import { ITask } from '../models/Task';
 
-export function useTodos() {
-  const [tags, setTags] = useState<ITag[]>([]);
-  const [tasks, setTasks] = useState<ITask[]>([]);
+export function useTodos<T>(link: string) {
+  const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchTags();
-    fetchTodos();
+    fetchItems();
+    // eslint-disable-next-line
   }, []);
 
-  const addTag = (tag: ITag) => {
-    setTags((prev) => [...prev, tag]);
+  const addItem = (item: T) => {
+    setItems((prev) => [...prev, item]);
   };
 
-  async function fetchTags() {
+  async function fetchItems() {
     try {
-      setLoading(true);
-      setError('');
-      const response = await axios.get<ITag[]>('http://localhost:3001/tags');
-      setTags(response.data);
-      setLoading(false);
       console.log('hi');
-    } catch (e) {
-      const error = e as AxiosError;
-      setLoading(false);
-      setError(error.message);
-    }
-  }
-
-  const addTodo = (task: ITask) => {
-    setTasks((prev) => [...prev, task]);
-  };
-
-  async function fetchTodos() {
-    try {
       setLoading(true);
       setError('');
-      const response = await axios.get<ITask[]>('http://localhost:3001/tasks');
-      setTasks(response.data);
+      const response = await axios.get<T[]>(`http://localhost:3001/${link}`);
+      setItems(response.data);
       setLoading(false);
     } catch (e) {
       const error = e as AxiosError;
@@ -51,5 +30,5 @@ export function useTodos() {
     }
   }
 
-  return { tags, tasks, error, loading, addTag, addTodo };
+  return { items, error, loading, addItem };
 }

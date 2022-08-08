@@ -4,25 +4,23 @@ import { useTodos } from '../hooks/useTodos';
 import Loader from './Loader';
 import DateChooser from './DateChooser';
 import TaskComponent from './TaskComponent';
+import { ITask } from '../models/Task';
 
 interface TaskListProps {}
 
-interface Task {
-  title: string;
-  tags: string[];
-  id: number;
-  completed: boolean;
-  timeMatches: boolean;
-}
-
 const TaskList: FC<TaskListProps> = () => {
   const [selectedTask, setSelectedTask] = useState<null | number>(null);
-  const { loading, error, tasks, addTodo } = useTodos();
+  const {
+    loading,
+    // error,
+    items: tasks,
+    // addItem: addTask,
+  } = useTodos<ITask>('tasks');
 
   const renderList = () => {
-    const completed: Task[] = [];
-    const overdue: Task[] = [];
-    const incoming: Task[] = [];
+    const completed: ITask[] = [];
+    const overdue: ITask[] = [];
+    const incoming: ITask[] = [];
 
     tasks.forEach((task) => {
       if (task.completed) {
@@ -34,9 +32,7 @@ const TaskList: FC<TaskListProps> = () => {
       }
     });
 
-    //  onClick={() => setSelectedTask(id)}
-
-    const mapTasks = (taskArr: any[]) => {
+    const mapTasks = (taskArr: ITask[]) => {
       return taskArr.map(({ title, tags, id, completed }) => (
         <TaskComponent
           key={id}

@@ -1,4 +1,6 @@
 import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
+
+import { ITag } from '../models/Tag';
 import Checkbox from './Checkbox';
 import TagComponent from './TagComponent';
 
@@ -6,7 +8,7 @@ interface TaskComponentProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
   title: string;
   completed?: boolean;
-  tags?: string[];
+  tags?: ITag[];
   date?: Date | null;
   taskId: number;
   selected?: boolean;
@@ -32,8 +34,12 @@ const TaskComponent: FC<TaskComponentProps> = ({
         <span>{title}</span>
       </div>
       <div className="flex gap-1 items-center">
-        {tags.map((item) => (
-          <TagComponent key={item} tagName={item} />
+        {tags.map((tag) => (
+          <TagComponent
+            key={tag.title}
+            tagName={tag.title}
+            tagColor={tag.color}
+          />
         ))}
         {date && <span>date</span>}
       </div>
