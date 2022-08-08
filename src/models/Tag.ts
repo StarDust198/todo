@@ -3,7 +3,7 @@ import { Colors, randomColor } from './Colors';
 export class Tag {
   // readonly id: string;
   readonly title: string;
-  color: Colors;
+  readonly color: Colors;
 
   constructor(title: string) {
     // this.id =

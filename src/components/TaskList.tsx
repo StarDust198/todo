@@ -1,4 +1,6 @@
 import { FC, useState } from 'react';
+
+import DateChooser from './DateChooser';
 import TaskComponent from './TaskComponent';
 
 interface TaskListProps {}
@@ -112,13 +114,16 @@ const TaskList: FC<TaskListProps> = () => {
   return (
     <div className="px-4 py-4 bg-slate-800">
       <h1 className="text-2xl font-extrabold">Today</h1>
-      <div className="flex gap-4 border-b border-slate-500 py-2">
+      <div className="flex border-b border-slate-500 py-2">
         <input
           type="text"
-          className="bg-slate-700 focus:outline-none w-3/4"
+          className="bg-slate-700 focus:outline-none w-2/3 mr-4"
           placeholder="Add new task"
         />
-        <input className="bg-slate-700 w-1/4" type="date" />
+        {/* <input className="bg-slate-700 w-1/4" type="date" /> */}
+        <div className="w-1/3">
+          <DateChooser />
+        </div>
       </div>
 
       {renderList()}

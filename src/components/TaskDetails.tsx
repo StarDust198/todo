@@ -1,4 +1,5 @@
 import { FC, KeyboardEvent } from 'react';
+import TagComponent from './TagComponent';
 import Checkbox from './Checkbox';
 
 // const checkbox = require('../assets/checkbox.svg') as string;
@@ -35,12 +36,13 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
         ></textarea>
         <div className="py-2 flex gap-2">
           {tags.map((item) => (
-            <span
-              key={item}
-              className="bg-yellow-800 py-1 px-2 rounded-full text-xs"
-            >
-              {item}
-            </span>
+            // <span
+            //   key={item}
+            //   className="bg-yellow-800 py-1 px-2 rounded-full text-xs"
+            // >
+            //   {item}
+            // </span>
+            <TagComponent tagName={item} key={item} />
           ))}
           <span
             onClick={addTag}

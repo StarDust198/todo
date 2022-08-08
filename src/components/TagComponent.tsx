@@ -1,12 +1,14 @@
 import { FC } from 'react';
+import { Colors, randomColor } from '../models/Colors';
 
 interface TagProps {
   tagName: string;
+  tagColor?: Colors;
 }
 
-const TagComponent: FC<TagProps> = ({ tagName }) => {
+const TagComponent: FC<TagProps> = ({ tagName, tagColor = randomColor() }) => {
   return (
-    <span className="bg-yellow-800 py-1 px-2 rounded-full text-xs">
+    <span className={`${tagColor} py-1 px-2 rounded-full text-xs`}>
       {tagName}
     </span>
   );
