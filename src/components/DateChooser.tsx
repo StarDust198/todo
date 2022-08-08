@@ -1,43 +1,46 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import DatePicker from 'react-datepicker';
+
 import 'react-datepicker/dist/react-datepicker.css';
+import { ReactComponent as Clock } from '../assets/clock.svg';
+import { ReactComponent as TimeNo } from '../assets/timeno.svg';
+import { ReactComponent as TimeYes } from '../assets/timeyes.svg';
 
 const DateChooser = () => {
   const [taskDate, setTaskDate] = useState<null | Date>(null);
-  const [time, setTime] = useState<null | Date>(null);
+  const [time, setTime] = useState(false);
 
-  // fix any type here!
-  // also doesnt change tme in the main date
-  const TimeInput = ({ date, value, onChange }: any) => (
-    <DatePicker
-      selected={time}
-      onChange={(date: Date) => setTime(date)}
-      showTimeSelect
-      showTimeSelectOnly
-      timeIntervals={30}
-      timeCaption=""
-      dateFormat="h:mm aa"
-      placeholderText="Time?"
-      className="focus:outline-none"
-    />
-  );
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTime(e.target.checked);
+  };
 
   return (
-    <>
-      <DatePicker
-        className={'bg-slate-700 focus:outline-none'}
-        selected={taskDate}
-        onChange={(date: Date) => setTaskDate(date)}
-        dateFormat={time ? 'MM/dd/yyy h:mm aa' : 'MM/dd/yyy'}
-        showTimeInput
-        placeholderText="Date?"
-        customTimeInput={<TimeInput />}
-      />
-      {/* <div>
-        <div>{`${taskDate}`}</div>
-        <div>{`${time}`}</div>
-      </div> */}
-    </>
+    <DatePicker
+      className={'bg-slate-700 focus:outline-none'}
+      selected={taskDate}
+      onChange={(date: Date) => setTaskDate(date)}
+      dateFormat={time ? 'MMMM d h:mm aa' : 'MMMM d'}
+      highlightDates={[new Date()]}
+      showTimeInput={time}
+      placeholderText="Date?"
+    >
+      <div className="py-2 px-2">
+        <Clock className="h-6 w-6 inline-block" />
+        <input
+          id="newTaskTime"
+          className="hidden"
+          type="checkbox"
+          onChange={onChange}
+        />
+        <label className="inline-block align-middle ml-1" htmlFor="newTaskTime">
+          {time ? (
+            <TimeYes className="h-4 w-4" />
+          ) : (
+            <TimeNo className="h-4 w-4" />
+          )}
+        </label>
+      </div>
+    </DatePicker>
   );
 };
 

@@ -1,9 +1,7 @@
 import { FC, KeyboardEvent } from 'react';
 import TagComponent from './TagComponent';
 import Checkbox from './Checkbox';
-
-// const checkbox = require('../assets/checkbox.svg') as string;
-// const unchecked = require('../assets/unchecked.svg') as string;
+import DateChooser from './DateChooser';
 
 const tags: string[] = 'tag1 tag2 tag3'.split(' ');
 
@@ -23,25 +21,18 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
     <div className="px-4 py-4 bg-slate-800">
       <div className="flex gap-4 border-b border-slate-500 py-2">
         <Checkbox id={4342342} />
-
-        <input className="bg-slate-700" type="date" />
+        <DateChooser />
       </div>
       <div>
         <h2 className="text-lg font-bold py-2">Main task of the week</h2>
         <textarea
-          className="bg-slate-700 w-full h-auto focus:outline-none"
+          className="bg-slate-700 w-full h-auto focus:outline-none resize-none"
           name="descr"
           placeholder="Description"
           onInput={onInput}
         ></textarea>
         <div className="py-2 flex gap-2">
           {tags.map((item) => (
-            // <span
-            //   key={item}
-            //   className="bg-yellow-800 py-1 px-2 rounded-full text-xs"
-            // >
-            //   {item}
-            // </span>
             <TagComponent tagName={item} key={item} />
           ))}
           <span

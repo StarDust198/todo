@@ -6,6 +6,7 @@ import { ReactComponent as TodayIcon } from '../assets/today.svg';
 import { ReactComponent as CompletedIcon } from '../assets/completed.svg';
 import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import FilterComponent from './FilterComponent';
+import { useTodos } from '../hooks/useTodos';
 
 const tags = ['importantTag', 'mainTag', 'notImportantTag'];
 const filterBase = {};
@@ -14,6 +15,7 @@ interface TaskFiltersProps {}
 
 const TaskFilters: FC<TaskFiltersProps> = () => {
   const [selectedFilter, setSelectedFilter] = useState('_today');
+  const { loading, error, tags, addTag } = useTodos();
 
   const onChangeFilter = (e: MouseEvent<HTMLLIElement>) => {
     const liElement: HTMLLIElement = e.currentTarget;
@@ -55,13 +57,13 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
         <ul className="border-b border-slate-500 py-2">
           {tags.map((tag) => (
             <FilterComponent
-              tagColor="bg-blue-800"
-              title={tag}
+              tagColor={tag.color}
+              title={tag.title}
               key={`${tag}-filter`}
               total={321}
-              id={tag}
+              id={tag.title}
               onClick={onChangeFilter}
-              selected={selectedFilter === tag}
+              selected={selectedFilter === tag.title}
             >
               <TagIcon className="w-4" />
             </FilterComponent>

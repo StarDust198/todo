@@ -1,6 +1,11 @@
 import { Colors, randomColor } from './Colors';
 
-export class Tag {
+export interface ITag {
+  title: string;
+  color: Colors;
+}
+
+export class Tag implements ITag {
   // readonly id: string;
   readonly title: string;
   readonly color: Colors;
