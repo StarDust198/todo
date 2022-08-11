@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, KeyboardEvent, useState } from 'react';
 
 import { useTodos } from '../hooks/useTodos';
 import Loader from './Loader';
@@ -14,8 +14,12 @@ const TaskList: FC<TaskListProps> = () => {
     loading,
     // error,
     items: tasks,
-    // addItem: addTask,
+    addItem: addTask,
   } = useTodos<ITask>('tasks');
+
+  const onTaskAdd = (newTask: string) => {
+    // addTask(...)
+  };
 
   const renderList = () => {
     const completed: ITask[] = [];
@@ -66,6 +70,11 @@ const TaskList: FC<TaskListProps> = () => {
           type="text"
           className="bg-slate-700 focus:outline-none w-2/3 mr-4"
           placeholder="Add new task"
+          onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+              onTaskAdd(e.currentTarget.value);
+            }
+          }}
         />
         <div className="w-1/3">
           <DateChooser />

@@ -7,7 +7,10 @@ interface CheckboxProps {
   isChecked?: boolean;
 }
 
-const Checkbox: FC<CheckboxProps> = ({ id, isChecked = false }) => {
+const Checkbox: FC<CheckboxProps> = ({
+  id,
+  isChecked = false,
+}): JSX.Element => {
   const [checked, setChecked] = useState(isChecked);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -35,11 +35,7 @@ const TaskComponent: FC<TaskComponentProps> = ({
       </div>
       <div className="flex gap-1 items-center">
         {tags.map((tag) => (
-          <TagComponent
-            key={tag.title}
-            tagName={tag.title}
-            tagColor={tag.color}
-          />
+          <TagComponent key={tag.id} tagName={tag.id} tagColor={tag.color} />
         ))}
         {date && <span>date</span>}
       </div>

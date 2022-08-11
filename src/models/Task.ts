@@ -65,7 +65,7 @@ export class Task implements ITask {
   }
 
   removeTag(tagName: string): void {
-    this.tags = this.tags.filter((tag) => tag.title !== tagName);
+    this.tags = this.tags.filter((tag) => tag.id !== tagName);
   }
 
   addDescription(newDescr: string): void {

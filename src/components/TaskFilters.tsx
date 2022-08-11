@@ -9,6 +9,7 @@ import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import FilterComponent from './FilterComponent';
 import { useTodos } from '../hooks/useTodos';
 import { ITag } from '../models/Tag';
+import { Colors } from '../models/Colors';
 
 interface TaskFiltersProps {}
 
@@ -18,10 +19,11 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
     // loading,
     // error,
     items: tags,
-    // addItem: addTag,
+    addItem: addTag,
   } = useTodos<ITag>('tags');
 
   const onChangeFilter = (e: MouseEvent<HTMLLIElement>) => {
+    addTag({ id: 'newTag', color: Colors.CYAN });
     const liElement: HTMLLIElement = e.currentTarget;
     setSelectedFilter(liElement.id);
   };
@@ -62,12 +64,12 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
           {tags.map((tag) => (
             <FilterComponent
               tagColor={tag.color}
-              title={tag.title}
-              key={`${tag.title}-filter`}
+              title={tag.id}
+              key={`${tag.id}-filter`}
               total={321}
-              id={tag.title}
+              id={tag.id}
               onClick={onChangeFilter}
-              selected={selectedFilter === tag.title}
+              selected={selectedFilter === tag.id}
             >
               <TagIcon className="w-4" />
             </FilterComponent>

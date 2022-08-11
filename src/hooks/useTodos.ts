@@ -11,13 +11,24 @@ export function useTodos<T>(link: string) {
     // eslint-disable-next-line
   }, []);
 
-  const addItem = (item: T) => {
-    setItems((prev) => [...prev, item]);
-  };
+  async function addItem(item: T) {
+    try {
+      setLoading(true);
+      setError('');
+      const response = await axios.post<T>(
+        `http://localhost:3001/${link}`,
+        item
+      );
+      setItems((prev) => [...prev, response.data]);
+    } catch (e) {
+      const error = e as AxiosError;
+      setLoading(false);
+      setError(error.message);
+    }
+  }
 
   async function fetchItems() {
     try {
-      console.log('hi');
       setLoading(true);
       setError('');
       const response = await axios.get<T[]>(`http://localhost:3001/${link}`);
