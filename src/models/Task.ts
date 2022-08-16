@@ -2,14 +2,14 @@ import { ITag } from './Tag';
 
 export interface ITask {
   id: number;
-  date?: Date;
+  date?: Date | null;
   time?: boolean;
   title: string;
   description?: string;
-  completed: boolean;
+  completed?: boolean;
   deleted?: boolean;
-  tags: ITag[];
-  timeMatches: boolean;
+  tags?: ITag[];
+  timeMatches?: boolean;
 }
 
 // interface ITask {
@@ -22,7 +22,7 @@ export interface ITask {
 
 export class Task implements ITask {
   readonly id: number;
-  date: Date;
+  date: Date | null;
   time: boolean;
   title: string;
   description: string;
@@ -33,7 +33,7 @@ export class Task implements ITask {
 
   constructor(
     title: string,
-    date: string,
+    date: string | undefined = undefined,
     time: boolean = false,
     completed: boolean = false,
     deleted: boolean = false,
@@ -41,7 +41,7 @@ export class Task implements ITask {
     timeMatches: boolean = true
   ) {
     this.id = new Date().getTime();
-    this.date = new Date(date);
+    this.date = date ? new Date(date) : null;
     this.time = time;
     this.title = title;
     this.tags = [...tags];

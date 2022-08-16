@@ -4,7 +4,7 @@ import { useTodos } from '../hooks/useTodos';
 import Loader from './Loader';
 import DateChooser from './DateChooser';
 import TaskComponent from './TaskComponent';
-import { ITask } from '../models/Task';
+import { ITask, Task } from '../models/Task';
 
 interface TaskListProps {}
 
@@ -13,20 +13,20 @@ const TaskList: FC<TaskListProps> = () => {
   const {
     loading,
     // error,
-    items: tasks,
+    items: tasks = [],
     addItem: addTask,
   } = useTodos<ITask>('tasks');
 
   const onTaskAdd = (newTask: string) => {
-    // addTask(...)
+    addTask(new Task(newTask));
   };
 
-  const renderList = () => {
+  const renderList = (taskArr: ITask[]) => {
     const completed: ITask[] = [];
     const overdue: ITask[] = [];
     const incoming: ITask[] = [];
 
-    tasks.forEach((task) => {
+    taskArr.forEach((task) => {
       if (task.completed) {
         completed.push(task);
       } else if (task.timeMatches) {
@@ -73,6 +73,7 @@ const TaskList: FC<TaskListProps> = () => {
           onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {
               onTaskAdd(e.currentTarget.value);
+              e.currentTarget.value = '';
             }
           }}
         />
@@ -81,7 +82,8 @@ const TaskList: FC<TaskListProps> = () => {
         </div>
       </div>
       {loading && <Loader />}
-      {tasks.length ? renderList() : null}
+      {tasks.length ? renderList(tasks) : null}
+      {/* <h2>'No tasks available yet.. Add some!'</h2> */}
     </div>
   );
 };

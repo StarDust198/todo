@@ -20,6 +20,7 @@ export function useTodos<T>(link: string) {
         item
       );
       setItems((prev) => [...prev, response.data]);
+      setLoading(false);
     } catch (e) {
       const error = e as AxiosError;
       setLoading(false);
