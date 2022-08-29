@@ -8,17 +8,9 @@ export interface ITask {
   description?: string;
   completed?: boolean;
   deleted?: boolean;
-  tags?: ITag[];
+  tags: ITag[];
   timeMatches?: boolean;
 }
-
-// interface ITask {
-//   title: string;
-//   tags: string[];
-//   id: number;
-//   completed: boolean;
-//   timeMatches: boolean;
-// }
 
 export class Task implements ITask {
   readonly id: number;
@@ -49,42 +41,5 @@ export class Task implements ITask {
     this.deleted = deleted;
     this.description = '';
     this.timeMatches = timeMatches;
-  }
-
-  changeTitle(newTitle: string): void {
-    this.title = newTitle;
-  }
-
-  changeDate(newDate: Date): void {
-    this.date = newDate;
-  }
-
-  addTag(newTag: ITag): void {
-    if (!this.tags.some((tag) => tag === newTag))
-      this.tags = [...this.tags, newTag];
-  }
-
-  removeTag(tagName: string): void {
-    this.tags = this.tags.filter((tag) => tag.id !== tagName);
-  }
-
-  addDescription(newDescr: string): void {
-    this.description = newDescr;
-  }
-
-  markCompleted(): void {
-    this.completed = true;
-  }
-
-  unMarkCompleted(): void {
-    this.completed = false;
-  }
-
-  markDeleted(): void {
-    this.deleted = true;
-  }
-
-  unMarkDeleted(): void {
-    this.deleted = false;
   }
 }
