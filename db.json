@@ -11,6 +11,14 @@
     {
       "id": "best",
       "color": "bg-teal-800"
+    },
+    {
+      "id": "fdsf",
+      "color": "bg-purple-800"
+    },
+    {
+      "id": "supertag",
+      "color": "bg-green-800"
     }
   ],
   "tasks": [
@@ -77,47 +85,16 @@
       "timeMatches": false
     },
     {
-      "id": 1662028591874,
+      "id": 1662836840610,
       "date": null,
       "time": false,
-      "title": "123123",
+      "title": "qwerty",
       "description": "",
       "completed": false,
       "deleted": false,
-      "tags": [],
-      "timeMatches": true
-    },
-    {
-      "id": 1662028643061,
-      "date": null,
-      "time": false,
-      "title": "123",
-      "description": "",
-      "completed": false,
-      "deleted": false,
-      "tags": [],
-      "timeMatches": true
-    },
-    {
-      "id": 1662753619830,
-      "date": null,
-      "time": false,
-      "title": "32132313",
-      "description": "",
-      "completed": true,
-      "deleted": false,
-      "tags": [],
-      "timeMatches": true
-    },
-    {
-      "id": 1662754480380,
-      "date": null,
-      "time": false,
-      "title": "    4324324",
-      "description": "",
-      "completed": true,
-      "deleted": false,
-      "tags": [],
+      "tags": [
+        "supertag"
+      ],
       "timeMatches": true
     }
   ]

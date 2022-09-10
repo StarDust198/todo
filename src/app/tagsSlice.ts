@@ -69,3 +69,5 @@ export default tagsSlice.reducer;
 export const selectAllTags = (state: RootState) => state.tags.tags;
 export const selectTagByName = (state: RootState, tagName: string) =>
   state.tags.tags.find((tag) => tag.id === tagName);
+export const selectTagNames = (state: RootState) =>
+  state.tags.tags.map((tag) => tag.id);
