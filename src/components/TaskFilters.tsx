@@ -1,4 +1,4 @@
-import { FC, useState, MouseEvent } from 'react';
+import { FC, useState, MouseEvent, useEffect } from 'react';
 
 import { ReactComponent as TagIcon } from '../assets/tag.svg';
 import { ReactComponent as CalendarIcon } from '../assets/calendar.svg';
@@ -7,23 +7,29 @@ import { ReactComponent as TodayIcon } from '../assets/today.svg';
 import { ReactComponent as CompletedIcon } from '../assets/completed.svg';
 import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import FilterComponent from './FilterComponent';
-import { useTodos } from '../hooks/useTodos';
 import { ITag } from '../models/Tag';
-import { Colors } from '../models/Colors';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchTags, selectAllTags } from '../app/tagsSlice';
+import { RootState } from '../app/store';
 
 interface TaskFiltersProps {}
 
 const TaskFilters: FC<TaskFiltersProps> = () => {
+  const dispatch = useAppDispatch();
   const [selectedFilter, setSelectedFilter] = useState('_today');
-  const {
-    // loading,
-    // error,
-    items: tags,
-    addItem: addTag,
-  } = useTodos<ITag>('tags');
+
+  const tagsStatus = useAppSelector((state: RootState) => state.tags.status);
+  const tagsError = useAppSelector((state: RootState) => state.tags.error);
+  const tagsArr: ITag[] = useAppSelector(selectAllTags);
+
+  useEffect(() => {
+    if (tagsStatus === 'idle') {
+      dispatch(fetchTags());
+    }
+  }, [tagsStatus, dispatch]);
 
   const onChangeFilter = (e: MouseEvent<HTMLLIElement>) => {
-    addTag({ id: 'newTag', color: Colors.CYAN });
+    // addTag({ id: 'newTag', color: Colors.CYAN });
     const liElement: HTMLLIElement = e.currentTarget;
     setSelectedFilter(liElement.id);
   };
@@ -59,9 +65,9 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
           <IncomingIcon />
         </FilterComponent>
       </ul>
-      {tags.length && (
+      {tagsArr.length && (
         <ul className="border-b border-slate-500 py-2">
-          {tags.map((tag) => (
+          {tagsArr.map((tag) => (
             <FilterComponent
               tagColor={tag.color}
               title={tag.id}

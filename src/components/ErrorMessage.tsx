@@ -1,5 +1,5 @@
 interface ErrorMessageProps {
-  error: string;
+  error: string | null;
 }
 
 const ErrorMessage = ({ error }: ErrorMessageProps) => {

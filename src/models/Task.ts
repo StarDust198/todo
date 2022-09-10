@@ -1,5 +1,3 @@
-import { ITag } from './Tag';
-
 export interface ITask {
   id: number;
   date?: Date | null;
@@ -8,7 +6,7 @@ export interface ITask {
   description?: string;
   completed?: boolean;
   deleted?: boolean;
-  tags: ITag[];
+  tags: string[];
   timeMatches?: boolean;
 }
 
@@ -20,7 +18,7 @@ export class Task implements ITask {
   description: string;
   completed: boolean;
   deleted: boolean;
-  tags: ITag[];
+  tags: string[];
   timeMatches: boolean;
 
   constructor(
@@ -29,13 +27,13 @@ export class Task implements ITask {
     time: boolean = false,
     completed: boolean = false,
     deleted: boolean = false,
-    tags: ITag[] = [],
+    tags: string[] = [],
     timeMatches: boolean = true
   ) {
     this.id = new Date().getTime();
     this.date = date ? new Date(date) : null;
     this.time = time;
-    this.title = title;
+    this.title = title.trim();
     this.tags = [...tags];
     this.completed = completed;
     this.deleted = deleted;

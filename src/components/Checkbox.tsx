@@ -1,35 +1,21 @@
-import { ChangeEvent, FC, useState } from 'react';
+import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import { ReactComponent as Checked } from '../assets/checkbox.svg';
 import { ReactComponent as Unchecked } from '../assets/unchecked.svg';
 
-interface CheckboxProps {
-  id: number;
-  isChecked?: boolean;
+interface CheckboxProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {
+  isChecked: boolean;
 }
 
-const Checkbox: FC<CheckboxProps> = ({
-  id,
-  isChecked = false,
-}): JSX.Element => {
-  const [checked, setChecked] = useState(isChecked);
-
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setChecked(e.target.checked);
-  };
-
-  const cbId = `task${id}`;
-
+const Checkbox: FC<CheckboxProps> = ({ isChecked, ...props }): JSX.Element => {
   return (
-    <>
-      <input id={cbId} className="hidden" type="checkbox" onChange={onChange} />
-      <label className="inline-block" htmlFor={cbId}>
-        {checked ? (
-          <Checked className="h-6 w-6" />
-        ) : (
-          <Unchecked className="h-6 w-6" />
-        )}
-      </label>
-    </>
+    <span {...props}>
+      {isChecked ? (
+        <Checked className="h-6 w-6" />
+      ) : (
+        <Unchecked className="h-6 w-6" />
+      )}
+    </span>
   );
 };
 

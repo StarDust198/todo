@@ -1,14 +1,22 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../app/store';
+
+import { selectTagByName } from '../app/tagsSlice';
+
 import { Colors, randomColor } from '../models/Colors';
 
 interface TagProps {
   tagName: string;
-  tagColor?: Colors;
 }
 
-const TagComponent: FC<TagProps> = ({ tagName, tagColor = randomColor() }) => {
+const TagComponent: FC<TagProps> = ({ tagName }) => {
+  const tag = useSelector((state: RootState) =>
+    selectTagByName(state, tagName)
+  );
+
   return (
-    <span className={`${tagColor} py-1 px-2 rounded-full text-xs`}>
+    <span className={`${tag?.color} py-1 px-2 rounded-full text-xs`}>
       {tagName}
     </span>
   );

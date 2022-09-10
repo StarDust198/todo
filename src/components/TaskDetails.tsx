@@ -3,7 +3,7 @@ import TagComponent from './TagComponent';
 import Checkbox from './Checkbox';
 import DateChooser from './DateChooser';
 
-const tags: string[] = 'tag1 tag2 tag3'.split(' ');
+const tags: string[] = 'main important best'.split(' ');
 
 interface TaskDetailsProps {}
 
@@ -20,7 +20,10 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
   return (
     <div className="px-4 py-4 bg-slate-800">
       <div className="flex gap-4 border-b border-slate-500 py-2">
-        <Checkbox id={4342342} />
+        <Checkbox
+          isChecked={false}
+          // taskId={4342342}
+        />
         <DateChooser />
       </div>
       <div>
