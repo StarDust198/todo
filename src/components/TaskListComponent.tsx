@@ -1,12 +1,8 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 
 import type { RootState } from '../app/store';
-import {
-  fetchTasks,
-  deleteTask,
-  switchCompletionTask,
-} from '../app/tasksSlice';
+import { fetchTasks, selectTask, selectFilteredTasks } from '../app/tasksSlice';
 
 import AddTaskInput from './AddTaskInput';
 import Loader from './Loader';
@@ -18,18 +14,20 @@ interface TaskListComponentProps {}
 
 const TaskListComponent: FC<TaskListComponentProps> = () => {
   const dispatch = useAppDispatch();
-  const [selectedTask, setSelectedTask] = useState<null | number>(null);
+  const selectedTaskId = useAppSelector(
+    (state: RootState) => state.tasks.selectedTask
+  );
 
   const tasksStatus = useAppSelector((state: RootState) => state.tasks.status);
   const tasksError = useAppSelector((state: RootState) => state.tasks.error);
-  const completed: ITask[] = useAppSelector((state: RootState) =>
-    state.tasks.tasks.filter((task) => task.completed)
+
+  const tasks: ITask[] = useAppSelector(selectFilteredTasks);
+  const completed: ITask[] = tasks.filter((task) => task.completed);
+  const overdue: ITask[] = tasks.filter(
+    (task) => !task.timeMatches && !task.completed
   );
-  const overdue: ITask[] = useAppSelector((state: RootState) =>
-    state.tasks.tasks.filter((task) => !task.timeMatches && !task.completed)
-  );
-  const incoming: ITask[] = useAppSelector((state: RootState) =>
-    state.tasks.tasks.filter((task) => task.timeMatches && !task.completed)
+  const incoming: ITask[] = tasks.filter(
+    (task) => task.timeMatches && !task.completed
   );
 
   useEffect(() => {
@@ -37,28 +35,6 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
       dispatch(fetchTasks());
     }
   }, [tasksStatus, dispatch]);
-
-  const onDeleteTask = async (taskId: number) => {
-    try {
-      // setAddRequestStatus('pending');
-      await dispatch(deleteTask(taskId)).unwrap();
-    } catch (err) {
-      console.error('Failed to delete the task: ', err);
-    } finally {
-      // setAddRequestStatus('idle');
-    }
-  };
-
-  const onCompleteTask = async (taskId: number) => {
-    try {
-      // setAddRequestStatus('pending');
-      await dispatch(switchCompletionTask(taskId)).unwrap();
-    } catch (err) {
-      console.error('Failed to switch the task: ', err);
-    } finally {
-      // setAddRequestStatus('idle');
-    }
-  };
 
   const mapTasks = (taskArr: ITask[]) => {
     return taskArr.map(({ title, tags, id, completed }) => (
@@ -68,9 +44,8 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
         tags={tags}
         taskId={id}
         completed={completed}
-        onClick={() => setSelectedTask(id)}
-        // onClick={() => onCompleteTask(id)}
-        selected={selectedTask === id}
+        onClick={() => dispatch(selectTask(id))}
+        selected={selectedTaskId === id}
       />
     ));
   };

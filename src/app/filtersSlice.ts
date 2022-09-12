@@ -1,17 +1,23 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { ITag } from '../models/Tag';
-import type { RootState } from '../app/store';
+import { LoadingStates } from '../models/LoadingStates';
+import { Filters } from '../models/Filters';
+import type { RootState } from './store';
 
 interface tagsState {
   tags: ITag[];
-  status: 'idle' | 'loading' | 'success' | 'fail';
+  activeFilter: Filters;
+  activeTags: string[];
+  status: LoadingStates;
   error: string | null;
 }
 
 const initialState: tagsState = {
   tags: [],
-  status: 'idle',
+  activeFilter: Filters.TODAY,
+  activeTags: [],
+  status: LoadingStates.IDLE,
   error: null,
 };
 
@@ -36,23 +42,34 @@ export const deleteTag = createAsyncThunk(
   }
 );
 
-const tagsSlice = createSlice({
+const filtersSlice = createSlice({
   name: 'tags',
   initialState,
   reducers: {
-    addTag(state, action) {},
+    setActiveFilter(state, action: PayloadAction<Filters>) {
+      state.activeFilter = action.payload;
+    },
+    switchActiveTag(state: tagsState, action: PayloadAction<string>) {
+      const tag = action.payload;
+      let activeTags = [...state.activeTags];
+      if (activeTags.includes(tag)) {
+        state.activeTags = activeTags.filter((item) => item !== tag);
+      } else {
+        state.activeTags.push(tag);
+      }
+    },
   },
   extraReducers(builder) {
     builder
       .addCase(fetchTags.pending, (state, action) => {
-        state.status = 'loading';
+        state.status = LoadingStates.LOADING;
       })
       .addCase(fetchTags.fulfilled, (state, action: PayloadAction<ITag[]>) => {
-        state.status = 'success';
+        state.status = LoadingStates.SUCCESS;
         state.tags = state.tags.concat(action.payload);
       })
       .addCase(fetchTags.rejected, (state, action) => {
-        state.status = 'fail';
+        state.status = LoadingStates.FAIL;
         state.error = action.error.message || null;
       })
       .addCase(addNewTag.fulfilled, (state, action) => {
@@ -64,10 +81,12 @@ const tagsSlice = createSlice({
   },
 });
 
-export default tagsSlice.reducer;
+export const { setActiveFilter, switchActiveTag } = filtersSlice.actions;
 
-export const selectAllTags = (state: RootState) => state.tags.tags;
+export default filtersSlice.reducer;
+
+export const selectAllTags = (state: RootState) => state.filters.tags;
 export const selectTagByName = (state: RootState, tagName: string) =>
-  state.tags.tags.find((tag) => tag.id === tagName);
+  state.filters.tags.find((tag) => tag.id === tagName);
 export const selectTagNames = (state: RootState) =>
-  state.tags.tags.map((tag) => tag.id);
+  state.filters.tags.map((tag) => tag.id);

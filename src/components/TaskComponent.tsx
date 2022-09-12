@@ -1,8 +1,5 @@
 import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 
-import { selectAllTags } from '../app/tagsSlice';
-
-import { ITag } from '../models/Tag';
 import Checkbox from './Checkbox';
 import TagComponent from './TagComponent';
 import { deleteTask, switchCompletionTask } from '../app/tasksSlice';
@@ -12,7 +9,7 @@ interface TaskComponentProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
   title: string;
   completed?: boolean;
-  tags?: string[];
+  tags: string[];
   date?: Date | null;
   taskId: number;
   selected?: boolean;
@@ -21,7 +18,7 @@ interface TaskComponentProps
 const TaskComponent: FC<TaskComponentProps> = ({
   title,
   completed = false,
-  tags = [],
+  tags,
   date = null,
   taskId,
   selected = false,

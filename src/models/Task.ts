@@ -1,4 +1,4 @@
-import { addNewTag, selectTagNames } from '../app/tagsSlice';
+import { addNewTag, selectTagNames } from '../app/filtersSlice';
 import { Tag } from './Tag';
 import store from '../app/store';
 
@@ -9,8 +9,8 @@ export interface ITask {
   date?: Date | null;
   time?: boolean;
   title: string;
-  description?: string;
-  completed?: boolean;
+  description: string;
+  completed: boolean;
   deleted?: boolean;
   tags: string[];
   timeMatches?: boolean;

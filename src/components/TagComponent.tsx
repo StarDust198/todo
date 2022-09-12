@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 
-import { selectTagByName } from '../app/tagsSlice';
+import { selectTagByName } from '../app/filtersSlice';
 
 interface TagProps {
   tagName: string;

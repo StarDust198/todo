@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import tagsSlice from './tagsSlice';
+import filtersSlice from './filtersSlice';
 import tasksSlice from './tasksSlice';
 
 const store = configureStore({
   reducer: {
+    filters: filtersSlice,
     tasks: tasksSlice,
-    tags: tagsSlice,
   },
 });
 

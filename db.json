@@ -13,32 +13,69 @@
       "color": "bg-teal-800"
     },
     {
-      "id": "fdsf",
-      "color": "bg-purple-800"
-    },
-    {
       "id": "supertag",
       "color": "bg-green-800"
+    },
+    {
+      "id": "tempTag",
+      "color": "bg-cyan-800"
+    },
+    {
+      "id": "newTag",
+      "color": "bg-blue-800"
+    },
+    {
+      "id": "superTag",
+      "color": "bg-fuchsia-800"
+    },
+    {
+      "id": "123312",
+      "color": "bg-blue-800"
+    },
+    {
+      "id": "2134",
+      "color": "bg-fuchsia-800"
+    },
+    {
+      "id": "goodTag",
+      "color": "bg-sky-800"
+    },
+    {
+      "id": "oneMoreTag",
+      "color": "bg-fuchsia-800"
+    },
+    {
+      "id": "oneMoretag",
+      "color": "bg-amber-800"
     }
   ],
   "tasks": [
     {
       "title": "main task",
       "tags": [
-        "main"
+        "main",
+        "tempTag",
+        "newTag",
+        "2134",
+        "goodTag",
+        "oneMoreTag"
       ],
       "id": 123214124124,
       "completed": false,
-      "timeMatches": false
+      "timeMatches": false,
+      "description": "1234"
     },
     {
       "title": "main task2",
       "tags": [
-        "main"
+        "main",
+        "oneMoretag",
+        "oneMoreTag"
       ],
       "id": 123446214124124,
       "completed": false,
-      "timeMatches": false
+      "timeMatches": false,
+      "description": "test description"
     },
     {
       "title": "main task3",
@@ -47,7 +84,8 @@
       ],
       "id": 1235464214124124,
       "completed": false,
-      "timeMatches": true
+      "timeMatches": true,
+      "description": ""
     },
     {
       "title": "main task4",
@@ -56,7 +94,8 @@
       ],
       "id": 12321412465124,
       "completed": false,
-      "timeMatches": true
+      "timeMatches": true,
+      "description": ""
     },
     {
       "title": "main task5",
@@ -66,7 +105,8 @@
       ],
       "id": 122433214124124,
       "completed": false,
-      "timeMatches": true
+      "timeMatches": true,
+      "description": ""
     },
     {
       "title": "main task6",
@@ -75,14 +115,19 @@
       ],
       "id": 12321412442124,
       "completed": true,
-      "timeMatches": true
+      "timeMatches": true,
+      "description": ""
     },
     {
       "title": "main task7",
-      "tags": [],
+      "tags": [
+        "important",
+        "123312"
+      ],
       "id": 12321544124124,
       "completed": true,
-      "timeMatches": false
+      "timeMatches": false,
+      "description": ""
     },
     {
       "id": 1662836840610,
@@ -93,7 +138,8 @@
       "completed": false,
       "deleted": false,
       "tags": [
-        "supertag"
+        "supertag",
+        "superTag"
       ],
       "timeMatches": true
     }

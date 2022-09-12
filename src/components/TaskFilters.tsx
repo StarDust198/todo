@@ -1,4 +1,16 @@
-import { FC, useState, MouseEvent, useEffect } from 'react';
+import { FC, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+
+import { ITag } from '../models/Tag';
+import {
+  fetchTags,
+  selectAllTags,
+  setActiveFilter,
+  switchActiveTag,
+} from '../app/filtersSlice';
+import { RootState } from '../app/store';
+import { LoadingStates } from '../models/LoadingStates';
+import { Filters } from '../models/Filters';
 
 import { ReactComponent as TagIcon } from '../assets/tag.svg';
 import { ReactComponent as CalendarIcon } from '../assets/calendar.svg';
@@ -7,60 +19,52 @@ import { ReactComponent as TodayIcon } from '../assets/today.svg';
 import { ReactComponent as CompletedIcon } from '../assets/completed.svg';
 import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import FilterComponent from './FilterComponent';
-import { ITag } from '../models/Tag';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchTags, selectAllTags } from '../app/tagsSlice';
-import { RootState } from '../app/store';
 
 interface TaskFiltersProps {}
 
 const TaskFilters: FC<TaskFiltersProps> = () => {
   const dispatch = useAppDispatch();
-  const [selectedFilter, setSelectedFilter] = useState('_today');
 
-  const tagsStatus = useAppSelector((state: RootState) => state.tags.status);
-  const tagsError = useAppSelector((state: RootState) => state.tags.error);
+  const activeFilter = useAppSelector(
+    (state: RootState) => state.filters.activeFilter
+  );
+  const activeTags = useAppSelector(
+    (state: RootState) => state.filters.activeTags
+  );
+  const tagsStatus = useAppSelector((state: RootState) => state.filters.status);
+  const tagsError = useAppSelector((state: RootState) => state.filters.error);
   const tagsArr: ITag[] = useAppSelector(selectAllTags);
 
   useEffect(() => {
-    if (tagsStatus === 'idle') {
+    if (tagsStatus === LoadingStates.IDLE) {
       dispatch(fetchTags());
     }
   }, [tagsStatus, dispatch]);
-
-  const onChangeFilter = (e: MouseEvent<HTMLLIElement>) => {
-    // addTag({ id: 'newTag', color: Colors.CYAN });
-    const liElement: HTMLLIElement = e.currentTarget;
-    setSelectedFilter(liElement.id);
-  };
 
   return (
     <div className="px-4 py-4 bg-slate-800 flex flex-col">
       <ul className="border-b border-slate-500 py-2">
         <FilterComponent
-          id="_today"
-          onClick={onChangeFilter}
+          onClick={() => dispatch(setActiveFilter(Filters.TODAY))}
           title="Today"
-          total={123}
-          selected={selectedFilter === '_today'}
+          selected={activeFilter === Filters.TODAY}
+          filter={Filters.TODAY}
         >
           <TodayIcon />
         </FilterComponent>
         <FilterComponent
-          id="_week"
-          onClick={onChangeFilter}
+          onClick={() => dispatch(setActiveFilter(Filters.WEEK))}
           title="Next 7 days"
-          total={123}
-          selected={selectedFilter === '_week'}
+          selected={activeFilter === Filters.WEEK}
+          filter={Filters.WEEK}
         >
           <CalendarIcon />
         </FilterComponent>
         <FilterComponent
-          id="_incoming"
-          onClick={onChangeFilter}
+          onClick={() => dispatch(setActiveFilter(Filters.INCOMING))}
           title="Incoming"
-          total={123}
-          selected={selectedFilter === '_incoming'}
+          selected={activeFilter === Filters.INCOMING}
+          filter={Filters.INCOMING}
         >
           <IncomingIcon />
         </FilterComponent>
@@ -69,13 +73,11 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
         <ul className="border-b border-slate-500 py-2">
           {tagsArr.map((tag) => (
             <FilterComponent
-              tagColor={tag.color}
+              tag={tag}
               title={tag.id}
-              key={`${tag.id}-filter`}
-              total={321}
-              id={tag.id}
-              onClick={onChangeFilter}
-              selected={selectedFilter === tag.id}
+              key={tag.id}
+              onClick={() => dispatch(switchActiveTag(tag.id))}
+              selected={activeTags.includes(tag.id)}
             >
               <TagIcon className="w-4" />
             </FilterComponent>
@@ -84,20 +86,18 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
       )}
       <ul className="py-2">
         <FilterComponent
-          id="_completed"
-          onClick={onChangeFilter}
+          onClick={() => dispatch(setActiveFilter(Filters.COMPLETED))}
           title="Completed"
-          total={111}
-          selected={selectedFilter === '_completed'}
+          selected={activeFilter === Filters.COMPLETED}
+          filter={Filters.COMPLETED}
         >
           <CompletedIcon />
         </FilterComponent>
         <FilterComponent
-          id="_deleted"
-          onClick={onChangeFilter}
+          onClick={() => dispatch(setActiveFilter(Filters.DELETED))}
           title="Deleted"
-          total={111}
-          selected={selectedFilter === '_deleted'}
+          selected={activeFilter === Filters.DELETED}
+          filter={Filters.DELETED}
         >
           <TrashIcon />
         </FilterComponent>
