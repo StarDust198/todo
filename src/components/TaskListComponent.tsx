@@ -2,50 +2,58 @@ import { FC, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 
 import type { RootState } from '../app/store';
-import { fetchTasks, selectTask, selectFilteredTasks } from '../app/tasksSlice';
+import {
+  fetchTasks,
+  setActiveTask,
+  selectFilteredTasks,
+} from '../app/tasksSlice';
 
 import AddTaskInput from './AddTaskInput';
 import Loader from './Loader';
 import ErrorMessage from './ErrorMessage';
 import TaskComponent from './TaskComponent';
 import { ITask } from '../models/Task';
+import { LoadingStates } from '../models/LoadingStates';
 
 interface TaskListComponentProps {}
 
 const TaskListComponent: FC<TaskListComponentProps> = () => {
   const dispatch = useAppDispatch();
-  const selectedTaskId = useAppSelector(
-    (state: RootState) => state.tasks.selectedTask
+  const activeTask = useAppSelector(
+    (state: RootState) => state.tasks.activeTask
   );
 
   const tasksStatus = useAppSelector((state: RootState) => state.tasks.status);
   const tasksError = useAppSelector((state: RootState) => state.tasks.error);
 
   const tasks: ITask[] = useAppSelector(selectFilteredTasks);
-  const completed: ITask[] = tasks.filter((task) => task.completed);
-  const overdue: ITask[] = tasks.filter(
-    (task) => !task.timeMatches && !task.completed
-  );
-  const incoming: ITask[] = tasks.filter(
-    (task) => task.timeMatches && !task.completed
-  );
+  const completedIds: string[] = tasks
+    .filter((task) => task.completed)
+    .map((task) => task.id);
+  const overdueIds: string[] = tasks
+    .filter((task) => !task.timeMatches && !task.completed)
+    .map((task) => task.id);
+  const incomingIds: string[] = tasks
+    .filter((task) => task.timeMatches && !task.completed)
+    .map((task) => task.id);
 
   useEffect(() => {
-    if (tasksStatus === 'idle') {
+    if (tasksStatus === LoadingStates.IDLE) {
       dispatch(fetchTasks());
     }
   }, [tasksStatus, dispatch]);
 
-  const mapTasks = (taskArr: ITask[]) => {
-    return taskArr.map(({ title, tags, id, completed }) => (
+  const mapTasks = (taskArr: string[]) => {
+    return taskArr.map((taskId) => (
       <TaskComponent
-        key={id}
-        title={title}
-        tags={tags}
-        taskId={id}
-        completed={completed}
-        onClick={() => dispatch(selectTask(id))}
-        selected={selectedTaskId === id}
+        key={taskId}
+        taskId={taskId}
+        // title={title}
+        // tags={tags}
+        // taskId={id}
+        // completed={completed}
+        onClick={() => dispatch(setActiveTask(taskId))}
+        selected={activeTask === taskId}
       />
     ));
   };
@@ -54,15 +62,15 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
     <div className="px-4 py-4 bg-slate-800">
       <h1 className="text-2xl font-extrabold">Today</h1>
       <AddTaskInput />
-      {tasksStatus === 'loading' && <Loader />}
+      {tasksStatus === LoadingStates.LOADING && <Loader />}
       {tasksError && <ErrorMessage error={tasksError} />}
       <>
         <h3 className="py-1">Overdue:</h3>
-        <ul>{mapTasks(overdue)}</ul>
+        <ul>{mapTasks(overdueIds)}</ul>
         <h3 className="py-1">Incoming:</h3>
-        <ul>{mapTasks(incoming)}</ul>
+        <ul>{mapTasks(incomingIds)}</ul>
         <h3 className="py-1">Completed:</h3>
-        <ul>{mapTasks(completed)}</ul>
+        <ul>{mapTasks(completedIds)}</ul>
       </>
       {/* <h2>'No tasks available yet.. Add some!'</h2> */}
     </div>

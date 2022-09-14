@@ -2,29 +2,29 @@ import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 
 import Checkbox from './Checkbox';
 import TagComponent from './TagComponent';
-import { deleteTask, switchCompletionTask } from '../app/tasksSlice';
-import { useAppDispatch } from '../app/hooks';
+import {
+  deleteTask,
+  switchCompletionTask,
+  selectTaskById,
+} from '../app/tasksSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { RootState } from '../app/store';
 
 interface TaskComponentProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
-  title: string;
-  completed?: boolean;
-  tags: string[];
-  date?: Date | null;
-  taskId: number;
-  selected?: boolean;
+  taskId: string;
+  selected: boolean;
 }
 
 const TaskComponent: FC<TaskComponentProps> = ({
-  title,
-  completed = false,
-  tags,
-  date = null,
   taskId,
-  selected = false,
+  selected,
   ...props
 }) => {
   const dispatch = useAppDispatch();
+  const task = useAppSelector((state: RootState) =>
+    selectTaskById(state, taskId)
+  );
 
   const onSwitchCompletion = async () => {
     try {
@@ -39,23 +39,23 @@ const TaskComponent: FC<TaskComponentProps> = ({
 
   const taskClass = `flex py-1 justify-between text-sm border-b border-slate-500 ${
     selected ? 'bg-slate-600' : 'hover:bg-slate-700'
-  } ${completed && ' opacity-30'}`;
+  } ${task?.completed && ' opacity-30'}`;
 
   return (
     <li className={taskClass} {...props}>
       <div className="flex gap-1 items-center">
         <Checkbox
           // taskId={taskId}
-          isChecked={completed}
+          isChecked={!!task?.completed}
           onClick={onSwitchCompletion}
         />
-        <span>{title}</span>
+        <span>{task?.title}</span>
       </div>
       <div className="flex gap-1 items-center">
-        {tags.map((tag) => (
+        {task?.tags.map((tag) => (
           <TagComponent key={tag} tagName={tag} />
         ))}
-        {date && <span>date</span>}
+        {task?.date && <span>date</span>}
       </div>
     </li>
   );

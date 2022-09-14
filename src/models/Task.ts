@@ -5,7 +5,7 @@ import store from '../app/store';
 const { getState, dispatch } = store;
 
 export interface ITask {
-  id: number;
+  id: string;
   date?: Date | null;
   time?: boolean;
   title: string;
@@ -17,7 +17,7 @@ export interface ITask {
 }
 
 export class Task implements ITask {
-  readonly id: number;
+  readonly id: string;
   date: Date | null;
   time: boolean;
   title: string;
@@ -32,7 +32,7 @@ export class Task implements ITask {
     date: string | undefined = undefined,
     time: boolean = false
   ) {
-    this.id = new Date().getTime();
+    this.id = new Date().getTime().toString();
     this.date = date ? new Date(date) : null;
     this.time = time;
     [this.title, this.tags] = this.splitTitle(title);

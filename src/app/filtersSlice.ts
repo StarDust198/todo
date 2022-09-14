@@ -5,7 +5,7 @@ import { LoadingStates } from '../models/LoadingStates';
 import { Filters } from '../models/Filters';
 import type { RootState } from './store';
 
-interface tagsState {
+interface filtersState {
   tags: ITag[];
   activeFilter: Filters;
   activeTags: string[];
@@ -13,7 +13,7 @@ interface tagsState {
   error: string | null;
 }
 
-const initialState: tagsState = {
+const initialState: filtersState = {
   tags: [],
   activeFilter: Filters.TODAY,
   activeTags: [],
@@ -21,13 +21,13 @@ const initialState: tagsState = {
   error: null,
 };
 
-export const fetchTags = createAsyncThunk('tags/fetchTags', async () => {
+export const fetchTags = createAsyncThunk('filters/fetchTags', async () => {
   const response = await axios.get<ITag[]>('http://localhost:3001/tags');
   return response.data;
 });
 
 export const addNewTag = createAsyncThunk(
-  'tags/addNewTag',
+  'filters/addNewTag',
   async (tag: ITag) => {
     const response = await axios.post<ITag>('http://localhost:3001/tags', tag);
     return response.data;
@@ -35,7 +35,7 @@ export const addNewTag = createAsyncThunk(
 );
 
 export const deleteTag = createAsyncThunk(
-  'tags/deleteTag',
+  'filters/deleteTag',
   async (tagName: string) => {
     await axios.delete(`http://localhost:3001/tags/${tagName}`);
     return tagName;
@@ -43,13 +43,13 @@ export const deleteTag = createAsyncThunk(
 );
 
 const filtersSlice = createSlice({
-  name: 'tags',
+  name: 'filters',
   initialState,
   reducers: {
     setActiveFilter(state, action: PayloadAction<Filters>) {
       state.activeFilter = action.payload;
     },
-    switchActiveTag(state: tagsState, action: PayloadAction<string>) {
+    switchActiveTag(state: filtersState, action: PayloadAction<string>) {
       const tag = action.payload;
       let activeTags = [...state.activeTags];
       if (activeTags.includes(tag)) {

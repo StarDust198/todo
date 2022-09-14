@@ -3,25 +3,28 @@ import {
   createAsyncThunk,
   PayloadAction,
   createSelector,
+  createEntityAdapter,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { ITask } from '../models/Task';
 import type { RootState } from '../app/store';
 import { Filters } from '../models/Filters';
+import { EntityState } from '@reduxjs/toolkit/dist/entities/models';
+import { LoadingStates } from '../models/LoadingStates';
 
-interface tasksState {
-  tasks: ITask[];
-  selectedTask: number | null;
-  status: 'idle' | 'loading' | 'success' | 'fail';
+const tasksAdapter = createEntityAdapter<ITask>();
+
+interface tasksState extends EntityState<ITask> {
+  activeTask: string;
+  status: LoadingStates;
   error: string | null;
 }
 
-const initialState: tasksState = {
-  tasks: [],
-  selectedTask: null,
-  status: 'idle',
+const initialState: tasksState = tasksAdapter.getInitialState({
+  activeTask: '',
+  status: LoadingStates.IDLE,
   error: null,
-};
+});
 
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
   const response = await axios.get<ITask[]>('http://localhost:3001/tasks');
@@ -49,25 +52,21 @@ export const deleteTask = createAsyncThunk(
 
 export const switchCompletionTask = createAsyncThunk(
   'tasks/switchCompletion',
-  async (taskId: number, thunkAPI) => {
+  async (taskId: string, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const initialTask = selectTaskById(state, taskId);
-    const response = await axios.patch<ITask>(
-      `http://localhost:3001/tasks/${taskId}`,
-      { completed: !initialTask?.completed }
-    );
-    return response.data;
+    await axios.patch<ITask>(`http://localhost:3001/tasks/${taskId}`, {
+      completed: !initialTask?.completed,
+    });
+    return { id: taskId, changes: { completed: !initialTask?.completed } };
   }
 );
 
 export const updateTask = createAsyncThunk(
   'tasks/updateTask',
   async (task: ITask) => {
-    const response = await axios.patch<ITask>(
-      `http://localhost:3001/tasks/${task.id}`,
-      task
-    );
-    return response.data;
+    await axios.patch<ITask>(`http://localhost:3001/tasks/${task.id}`, task);
+    return { id: task.id, changes: task };
   }
 );
 
@@ -75,65 +74,59 @@ const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    selectTask(state, action) {
-      state.selectedTask = action.payload;
+    setActiveTask(state, action) {
+      state.activeTask = action.payload;
     },
   },
   extraReducers(builder) {
     builder
       .addCase(fetchTasks.pending, (state, action) => {
-        state.status = 'loading';
+        state.status = LoadingStates.LOADING;
       })
       .addCase(
         fetchTasks.fulfilled,
         (state, action: PayloadAction<ITask[]>) => {
-          state.status = 'success';
-          state.tasks = state.tasks.concat(action.payload);
+          state.status = LoadingStates.SUCCESS;
+          // state.tasks = state.tasks.concat(action.payload);
+          tasksAdapter.upsertMany(state, action.payload);
         }
       )
       .addCase(fetchTasks.rejected, (state, action) => {
-        state.status = 'fail';
+        state.status = LoadingStates.FAIL;
         state.error = action.error.message || null;
       })
-      .addCase(addNewTask.fulfilled, (state, action) => {
-        state.tasks.push(action.payload);
-      })
-      .addCase(deleteTask.fulfilled, (state, action) => {
-        state.tasks = state.tasks.filter((task) => task.id !== action.payload);
-      })
-      .addCase(switchCompletionTask.fulfilled, (state, action) => {
-        const taskId = action.payload.id;
-        const task = state.tasks.find((task) => task.id === taskId);
-        if (task) task.completed = action.payload.completed;
-      })
-      .addCase(updateTask.fulfilled, (state, action) => {
-        const taskId = action.payload.id;
-        const taskIndex = state.tasks.findIndex((task) => task.id === taskId);
-        if (taskIndex !== -1) state.tasks[taskIndex] = action.payload;
-      });
+      .addCase(addNewTask.fulfilled, tasksAdapter.addOne)
+      .addCase(deleteTask.fulfilled, tasksAdapter.removeOne)
+      .addCase(switchCompletionTask.fulfilled, tasksAdapter.updateOne)
+      .addCase(updateTask.fulfilled, tasksAdapter.updateOne);
   },
 });
 
-export const { selectTask } = tasksSlice.actions;
-
+export const { setActiveTask } = tasksSlice.actions;
 export default tasksSlice.reducer;
 
-export const selectAllTasks = (state: RootState) => state.tasks.tasks;
-export const selectTasksByTag = (state: RootState, tag: string) =>
-  state.tasks.tasks.filter((task: ITask) => task.tags.includes(tag));
-export const selectTaskById = (state: RootState, taskId: number | null) =>
-  state.tasks.tasks.find((task) => task.id === taskId);
+export const {
+  selectAll: selectAllTasks,
+  selectById: selectTaskById,
+  selectIds: selectTaskIds,
+} = tasksAdapter.getSelectors((state: RootState) => state.tasks);
+
+export const selectTaskIdsByTag = createSelector(
+  [selectAllTasks, (state, tagName) => tagName],
+  (tasks, tagName) =>
+    tasks.filter((task) => task.tags.includes(tagName)).map((task) => task.id)
+);
 
 export const selectFilteredTasks = createSelector(
-  selectAllTasks,
-  (state: RootState) => state.filters,
-  (tasks, filters) => {
-    const { activeFilter, activeTags } = filters;
+  [
+    selectAllTasks,
+    (state: RootState) => state.filters.activeFilter,
+    (state: RootState) => state.filters.activeTags,
+  ],
+  (tasks, activeFilter, activeTags) => {
     const showAllTasks =
       activeFilter !== Filters.COMPLETED && activeFilter !== Filters.DELETED;
-    if (showAllTasks && activeTags.length === 0) {
-      return tasks;
-    }
+    if (showAllTasks && activeTags.length === 0) return tasks;
 
     const completedStatus = activeFilter === Filters.COMPLETED;
     const deletedStatus = activeFilter === Filters.DELETED;
@@ -152,7 +145,7 @@ export const selectFilteredTasks = createSelector(
 
 export const countTasksByFilter = createSelector(
   [
-    (state: RootState) => state.tasks.tasks,
+    selectAllTasks,
     (state: RootState, filter: string | Filters | undefined) => filter,
   ],
   (tasks, filter) => {
@@ -175,21 +168,3 @@ export const countTasksByFilter = createSelector(
     }
   }
 );
-
-// export const selectFilteredTasks = createSelector(
-//   // Pass our other memoized selector as an input
-//   selectFilteredTasks,
-//   // And derive data in the output selector
-//   (filteredTodos) => filteredTodos.map((todo) => todo.id)
-// );
-
-// const selectItemsByCategory = createSelector(
-//   [
-//     // Usual first input - extract value from `state`
-//     state => state.items,
-//     // Take the second arg, `category`, and forward to the output selector
-//     (state, category) => category
-//   ],
-//   // Output selector gets (`items, category)` as args
-//   (items, category) => items.filter(item => item.category === category)
-// )

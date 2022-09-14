@@ -16,7 +16,7 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
   const dispatch = useAppDispatch();
 
   const task = useAppSelector((state: RootState) =>
-    selectTaskById(state, state.tasks.selectedTask)
+    selectTaskById(state, state.tasks.activeTask)
   );
   const existingTags = useAppSelector((state: RootState) =>
     selectTagNames(state)
