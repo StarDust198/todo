@@ -11,6 +11,8 @@ import type { RootState } from '../app/store';
 import { Filters } from '../models/Filters';
 import { EntityState } from '@reduxjs/toolkit/dist/entities/models';
 import { LoadingStates } from '../models/LoadingStates';
+import { addNewTag, selectTagNames } from './filtersSlice';
+import { Tag } from '../models/Tag';
 
 const tasksAdapter = createEntityAdapter<ITask>();
 
@@ -33,7 +35,12 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
 
 export const addNewTask = createAsyncThunk(
   'tasks/addNewTask',
-  async (task: ITask) => {
+  async (task: ITask, thunkAPI) => {
+    const { getState, dispatch } = thunkAPI;
+    const initialTags = [...selectTagNames(getState() as RootState)];
+    task.tags.forEach((tag) => {
+      if (!initialTags.includes(tag)) dispatch(addNewTag(new Tag(tag)));
+    });
     const response = await axios.post<ITask>(
       'http://localhost:3001/tasks',
       task
@@ -53,8 +60,8 @@ export const deleteTask = createAsyncThunk(
 export const switchCompletionTask = createAsyncThunk(
   'tasks/switchCompletion',
   async (taskId: string, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const initialTask = selectTaskById(state, taskId);
+    const { getState } = thunkAPI;
+    const initialTask = selectTaskById(getState() as RootState, taskId);
     await axios.patch<ITask>(`http://localhost:3001/tasks/${taskId}`, {
       completed: !initialTask?.completed,
     });
@@ -64,7 +71,12 @@ export const switchCompletionTask = createAsyncThunk(
 
 export const updateTask = createAsyncThunk(
   'tasks/updateTask',
-  async (task: ITask) => {
+  async (task: ITask, thunkAPI) => {
+    const { getState, dispatch } = thunkAPI;
+    const initialTags = [...selectTagNames(getState() as RootState)];
+    task.tags.forEach((tag) => {
+      if (!initialTags.includes(tag)) dispatch(addNewTag(new Tag(tag)));
+    });
     await axios.patch<ITask>(`http://localhost:3001/tasks/${task.id}`, task);
     return { id: task.id, changes: task };
   }

@@ -1,18 +1,26 @@
 import { FC, FocusEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
+import DatePicker from 'react-datepicker';
 
 import type { RootState } from '../app/store';
-import { updateTask, selectTaskById } from '../app/tasksSlice';
+import {
+  updateTask,
+  selectTaskById,
+  switchCompletionTask,
+} from '../app/tasksSlice';
 import { addNewTag, selectTagNames } from '../app/filtersSlice';
 
 import TagComponent from './TagComponent';
 import Checkbox from './Checkbox';
-import DateChooser from './DateChooser';
+import TimeCheckbox from './TimeCheckbox';
+
 import { Tag } from '../models/Tag';
 
 interface TaskDetailsProps {}
 
 const TaskDetails: FC<TaskDetailsProps> = () => {
+  const [taskDate, setTaskDate] = useState<null | Date>(null);
+  const [time, setTime] = useState(false);
   const dispatch = useAppDispatch();
 
   const task = useAppSelector((state: RootState) =>
@@ -29,6 +37,10 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
     if (task) setDescription(task.description);
     setNewTag('');
   }, [task]);
+
+  const onSwitchTime = () => {
+    setTime((time) => !time);
+  };
 
   // Textarea element Auto-height
   const onDescrInput = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -102,9 +114,19 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
       <div className="flex gap-4 border-b border-slate-500 py-2">
         <Checkbox
           isChecked={task.completed}
-          // taskId={4342342}
+          onClick={() => dispatch(switchCompletionTask(task.id))}
         />
-        <DateChooser />
+        <DatePicker
+          className={'bg-slate-700 focus:outline-none'}
+          selected={taskDate}
+          onChange={(date: Date) => setTaskDate(date)}
+          dateFormat={time ? 'MMMM d h:mm aa' : 'MMMM d'}
+          highlightDates={[new Date()]}
+          showTimeInput={time}
+          placeholderText="Date?"
+        >
+          <TimeCheckbox time={time} switchTime={onSwitchTime} />
+        </DatePicker>
       </div>
       <div>
         <h2 className="text-lg font-bold py-2">{task.title}</h2>

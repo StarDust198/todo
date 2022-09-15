@@ -3,7 +3,7 @@ import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import Checkbox from './Checkbox';
 import TagComponent from './TagComponent';
 import {
-  deleteTask,
+  // deleteTask,
   switchCompletionTask,
   selectTaskById,
 } from '../app/tasksSlice';
@@ -26,17 +26,6 @@ const TaskComponent: FC<TaskComponentProps> = ({
     selectTaskById(state, taskId)
   );
 
-  const onSwitchCompletion = async () => {
-    try {
-      // setAddRequestStatus('pending');
-      await dispatch(switchCompletionTask(taskId)).unwrap();
-    } catch (err) {
-      console.error('Failed to switch the task: ', err);
-    } finally {
-      // setAddRequestStatus('idle');
-    }
-  };
-
   const taskClass = `flex py-1 justify-between text-sm border-b border-slate-500 ${
     selected ? 'bg-slate-600' : 'hover:bg-slate-700'
   } ${task?.completed && ' opacity-30'}`;
@@ -45,9 +34,8 @@ const TaskComponent: FC<TaskComponentProps> = ({
     <li className={taskClass} {...props}>
       <div className="flex gap-1 items-center">
         <Checkbox
-          // taskId={taskId}
           isChecked={!!task?.completed}
-          onClick={onSwitchCompletion}
+          onClick={() => dispatch(switchCompletionTask(taskId))}
         />
         <span>{task?.title}</span>
       </div>
@@ -55,7 +43,11 @@ const TaskComponent: FC<TaskComponentProps> = ({
         {task?.tags.map((tag) => (
           <TagComponent key={tag} tagName={tag} />
         ))}
-        {task?.date && <span>date</span>}
+        {task?.date && (
+          <span className="ml-4">{`${new Date(
+            task.date
+          ).toDateString()}`}</span>
+        )}
       </div>
     </li>
   );

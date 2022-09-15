@@ -3,11 +3,14 @@ import { useAppDispatch } from '../app/hooks';
 import { addNewTask } from '../app/tasksSlice';
 import { Task } from '../models/Task';
 
-import DateChooser from './DateChooser';
+import DatePicker from 'react-datepicker';
+import TimeCheckbox from './TimeCheckbox';
 
 const AddTaskInput = () => {
   const [title, setTitle] = useState('');
   const [addRequestStatus, setAddRequestStatus] = useState('idle');
+  const [taskDate, setTaskDate] = useState<null | Date>(null);
+  const [time, setTime] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -15,16 +18,34 @@ const AddTaskInput = () => {
     setTitle(e.target.value);
   };
 
+  const onSwitchTime = () => {
+    setTime((time) => !time);
+  };
+
   const canSave = Boolean(title) && addRequestStatus === 'idle';
 
   const onTaskAdd = async () => {
+    // console.log(
+    //   taskDate &&
+    //     new Date(
+    //       new Date(
+    //         new Date(new Date(taskDate))
+    //         // .setHours(23)).setMinutes(59)).setSeconds(59)
+    //       ).toISOString()
+    //     ).getDate()
+    // );
     if (canSave) {
+      const newTask = new Task({
+        title,
+        date: taskDate,
+        time,
+      });
       try {
         setAddRequestStatus('pending');
-        await dispatch(addNewTask(new Task(title))).unwrap();
+        await dispatch(addNewTask(newTask)).unwrap();
         setTitle('');
       } catch (err) {
-        console.error('Failed to save the task: ', err);
+        console.error('Failed to add new task: ', err);
       } finally {
         setAddRequestStatus('idle');
       }
@@ -46,7 +67,17 @@ const AddTaskInput = () => {
         onChange={onTitleChanged}
       />
       <div className="w-1/3">
-        <DateChooser />
+        <DatePicker
+          className={'bg-slate-700 focus:outline-none'}
+          selected={taskDate}
+          onChange={(date: Date) => setTaskDate(date)}
+          dateFormat={time ? 'MMMM d h:mm aa' : 'MMMM d'}
+          highlightDates={[new Date()]}
+          showTimeInput={time}
+          placeholderText="Date?"
+        >
+          <TimeCheckbox time={time} switchTime={onSwitchTime} />
+        </DatePicker>
       </div>
     </div>
   );

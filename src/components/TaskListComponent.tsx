@@ -48,10 +48,6 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
       <TaskComponent
         key={taskId}
         taskId={taskId}
-        // title={title}
-        // tags={tags}
-        // taskId={id}
-        // completed={completed}
         onClick={() => dispatch(setActiveTask(taskId))}
         selected={activeTask === taskId}
       />

@@ -32,7 +32,7 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
     (state: RootState) => state.filters.activeTags
   );
   const tagsStatus = useAppSelector((state: RootState) => state.filters.status);
-  const tagsError = useAppSelector((state: RootState) => state.filters.error);
+  // const tagsError = useAppSelector((state: RootState) => state.filters.error);
   const tagsArr: ITag[] = useAppSelector(selectAllTags);
 
   useEffect(() => {

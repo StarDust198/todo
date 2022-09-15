@@ -1,12 +1,6 @@
-import { addNewTag, selectTagNames } from '../app/filtersSlice';
-import { Tag } from './Tag';
-import store from '../app/store';
-
-const { getState, dispatch } = store;
-
 export interface ITask {
   id: string;
-  date?: Date | null;
+  date?: string;
   time?: boolean;
   title: string;
   description: string;
@@ -18,7 +12,7 @@ export interface ITask {
 
 export class Task implements ITask {
   readonly id: string;
-  date: Date | null;
+  date: string;
   time: boolean;
   title: string;
   description: string;
@@ -27,24 +21,40 @@ export class Task implements ITask {
   tags: string[];
   timeMatches: boolean;
 
-  constructor(
-    title: string,
-    date: string | undefined = undefined,
-    time: boolean = false
-  ) {
-    this.id = new Date().getTime().toString();
-    this.date = date ? new Date(date) : null;
+  constructor({
+    title,
+    id = undefined,
+    tags = [],
+    date,
+    time = false,
+    description = '',
+    completed = false,
+    deleted = false,
+  }: {
+    title: string;
+    id?: string | undefined;
+    tags?: string[];
+    date?: Date | null;
+    time?: boolean;
+    description?: string;
+    completed?: boolean;
+    deleted?: boolean;
+  }) {
+    this.id = id ? id : new Date().getTime().toString();
+    this.date = date ? (time ? date : this.adjustDate(date)).toISOString() : '';
     this.time = time;
-    [this.title, this.tags] = this.splitTitle(title);
-    this.completed = false;
-    this.deleted = false;
-    this.description = '';
+
+    [this.title, this.tags] = this.parseTitle(title);
+    this.tags.push(...tags);
+
+    this.completed = completed;
+    this.deleted = deleted;
+    this.description = description;
     this.timeMatches = true;
   }
 
   // function splitting string into title and tags
-  private splitTitle(str: string): [string, string[]] {
-    const existingTags = selectTagNames(getState());
+  private parseTitle(str: string): [string, string[]] {
     const inputArr = str.split('#');
     let taskTitle = inputArr[0];
 
@@ -55,12 +65,16 @@ export class Task implements ITask {
         taskTitle += item.slice(spaceStart);
         tagsArr[i] = item.slice(0, spaceStart);
       }
-      if (!existingTags.includes(tagsArr[i])) {
-        const newTag = new Tag(tagsArr[i]);
-        dispatch(addNewTag(newTag));
-      }
     });
 
     return [taskTitle.trim().replace(/\s{2,}/gm, ` `), tagsArr];
+  }
+
+  private adjustDate(date: Date): Date {
+    return new Date(
+      new Date(new Date(new Date(date).setHours(23)).setMinutes(59)).setSeconds(
+        59
+      )
+    );
   }
 }

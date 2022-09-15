@@ -1,25 +1,31 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  createEntityAdapter,
+  EntityState,
+} from '@reduxjs/toolkit';
 import axios from 'axios';
 import { ITag } from '../models/Tag';
 import { LoadingStates } from '../models/LoadingStates';
 import { Filters } from '../models/Filters';
 import type { RootState } from './store';
 
-interface filtersState {
-  tags: ITag[];
+const filtersAdapter = createEntityAdapter<ITag>();
+
+interface filtersState extends EntityState<ITag> {
   activeFilter: Filters;
   activeTags: string[];
   status: LoadingStates;
   error: string | null;
 }
 
-const initialState: filtersState = {
-  tags: [],
+const initialState: filtersState = filtersAdapter.getInitialState({
   activeFilter: Filters.TODAY,
   activeTags: [],
   status: LoadingStates.IDLE,
   error: null,
-};
+});
 
 export const fetchTags = createAsyncThunk('filters/fetchTags', async () => {
   const response = await axios.get<ITag[]>('http://localhost:3001/tags');
@@ -66,18 +72,14 @@ const filtersSlice = createSlice({
       })
       .addCase(fetchTags.fulfilled, (state, action: PayloadAction<ITag[]>) => {
         state.status = LoadingStates.SUCCESS;
-        state.tags = state.tags.concat(action.payload);
+        filtersAdapter.upsertMany(state, action.payload);
       })
       .addCase(fetchTags.rejected, (state, action) => {
         state.status = LoadingStates.FAIL;
         state.error = action.error.message || null;
       })
-      .addCase(addNewTag.fulfilled, (state, action) => {
-        state.tags.push(action.payload);
-      })
-      .addCase(deleteTag.fulfilled, (state, action) => {
-        state.tags = state.tags.filter((tag) => tag.id !== action.payload);
-      });
+      .addCase(addNewTag.fulfilled, filtersAdapter.addOne)
+      .addCase(deleteTag.fulfilled, filtersAdapter.removeOne);
   },
 });
 
@@ -85,8 +87,8 @@ export const { setActiveFilter, switchActiveTag } = filtersSlice.actions;
 
 export default filtersSlice.reducer;
 
-export const selectAllTags = (state: RootState) => state.filters.tags;
-export const selectTagByName = (state: RootState, tagName: string) =>
-  state.filters.tags.find((tag) => tag.id === tagName);
-export const selectTagNames = (state: RootState) =>
-  state.filters.tags.map((tag) => tag.id);
+export const {
+  selectAll: selectAllTags,
+  selectById: selectTagByName,
+  selectIds: selectTagNames,
+} = filtersAdapter.getSelectors((state: RootState) => state.filters);
