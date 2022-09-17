@@ -6,12 +6,18 @@ import {
   createEntityAdapter,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { ITask } from '../models/Task';
-import type { RootState } from '../app/store';
-import { Filters } from '../models/Filters';
 import { EntityState } from '@reduxjs/toolkit/dist/entities/models';
+
+import type { RootState } from '../app/store';
+import { ITask } from '../models/Task';
+import { Filters } from '../models/Filters';
 import { LoadingStates } from '../models/LoadingStates';
-import { addNewTag, selectTagNames } from './filtersSlice';
+import {
+  addNewTag,
+  selectTagNames,
+  // selectActiveFilter,
+  // selectActiveTags,
+} from './filtersSlice';
 import { Tag } from '../models/Tag';
 
 const tasksAdapter = createEntityAdapter<ITask>();
@@ -78,7 +84,7 @@ export const updateTask = createAsyncThunk(
       if (!initialTags.includes(tag)) dispatch(addNewTag(new Tag(tag)));
     });
     await axios.patch<ITask>(`http://localhost:3001/tasks/${task.id}`, task);
-    return { id: task.id, changes: task };
+    return { id: task.id, changes: { ...task } };
   }
 );
 
@@ -180,3 +186,28 @@ export const countTasksByFilter = createSelector(
     }
   }
 );
+
+// export const filteredTasks = createSelector(
+//   [
+//     selectAllTasks,
+//     selectActiveFilter,
+//     selectActiveTags,
+//   ],
+//   (tasks, activeFilter, activeTags) => {
+
+//     if (typeof filter === 'string') {
+//       return tasks.filter(
+//         (task) => task.tags.includes(filter) && !task.completed && !task.deleted
+//       ).length;
+//     } else {
+//       switch (filter) {
+//         case Filters.DELETED:
+//           return tasks.filter((task) => task.deleted).length;
+//         case Filters.COMPLETED:
+//           return tasks.filter((task) => task.completed).length;
+//         default:
+//           return tasks.length;
+//       }
+//     }
+//   }
+// );

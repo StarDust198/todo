@@ -15,6 +15,7 @@ import Checkbox from './Checkbox';
 import TimeCheckbox from './TimeCheckbox';
 
 import { Tag } from '../models/Tag';
+import { Task } from '../models/Task';
 
 interface TaskDetailsProps {}
 
@@ -102,9 +103,19 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
     }
   };
 
+  const onRemoveTag = (tag: string): void => {
+    if (task) {
+      const updatedTask = {
+        ...task,
+        tags: [...task.tags.filter((item) => item !== tag)],
+      };
+      dispatch(updateTask(new Task(updatedTask)));
+    }
+  };
+
   if (!task)
     return (
-      <h2 className="px-4 py-4 bg-slate-800 text-center">
+      <h2 className="p-4 bg-slate-800 text-center">
         Select task from the list
       </h2>
     );
@@ -140,7 +151,11 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
         />
         <div className="py-2 flex flex-wrap gap-2">
           {task.tags.map((item) => (
-            <TagComponent tagName={item} key={item} />
+            <TagComponent
+              tagName={item}
+              key={item}
+              removeTag={() => onRemoveTag(item)}
+            />
           ))}
           <span className="text-cyan-600 px-3 rounded-full border border-cyan-600 text-sm">
             <input

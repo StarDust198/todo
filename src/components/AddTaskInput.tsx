@@ -2,13 +2,14 @@ import { KeyboardEvent, useState } from 'react';
 import { useAppDispatch } from '../app/hooks';
 import { addNewTask } from '../app/tasksSlice';
 import { Task } from '../models/Task';
+import { LoadingStates } from '../models/LoadingStates';
 
 import DatePicker from 'react-datepicker';
 import TimeCheckbox from './TimeCheckbox';
 
 const AddTaskInput = () => {
   const [title, setTitle] = useState('');
-  const [addRequestStatus, setAddRequestStatus] = useState('idle');
+  const [addRequestStatus, setAddRequestStatus] = useState(LoadingStates.IDLE);
   const [taskDate, setTaskDate] = useState<null | Date>(null);
   const [time, setTime] = useState(false);
 
@@ -22,32 +23,23 @@ const AddTaskInput = () => {
     setTime((time) => !time);
   };
 
-  const canSave = Boolean(title) && addRequestStatus === 'idle';
+  const canSave = Boolean(title) && addRequestStatus === LoadingStates.IDLE;
 
   const onTaskAdd = async () => {
-    // console.log(
-    //   taskDate &&
-    //     new Date(
-    //       new Date(
-    //         new Date(new Date(taskDate))
-    //         // .setHours(23)).setMinutes(59)).setSeconds(59)
-    //       ).toISOString()
-    //     ).getDate()
-    // );
     if (canSave) {
       const newTask = new Task({
         title,
-        date: taskDate,
+        date: taskDate ? taskDate.toISOString() : '',
         time,
       });
       try {
-        setAddRequestStatus('pending');
+        setAddRequestStatus(LoadingStates.LOADING);
         await dispatch(addNewTask(newTask)).unwrap();
         setTitle('');
       } catch (err) {
         console.error('Failed to add new task: ', err);
       } finally {
-        setAddRequestStatus('idle');
+        setAddRequestStatus(LoadingStates.IDLE);
       }
     }
   };

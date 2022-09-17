@@ -92,3 +92,7 @@ export const {
   selectById: selectTagByName,
   selectIds: selectTagNames,
 } = filtersAdapter.getSelectors((state: RootState) => state.filters);
+
+export const selectActiveTags = (state: RootState) => state.filters.activeTags;
+export const selectActiveFilter = (state: RootState) =>
+  state.filters.activeFilter;

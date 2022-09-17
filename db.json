@@ -60,37 +60,29 @@
   "tasks": [
     {
       "title": "main task",
-      "tags": [
-        "main",
-        "tempTag",
-        "newTag",
-        "2134",
-        "goodTag",
-        "oneMoreTag"
-      ],
+      "tags": ["main", "newTag", "oneMoreTag"],
       "id": "123214124124",
       "completed": false,
       "timeMatches": false,
-      "description": "1234"
+      "description": "1234",
+      "date": "",
+      "time": false,
+      "deleted": false
     },
     {
       "title": "main task2",
-      "tags": [
-        "main",
-        "oneMoretag",
-        "oneMoreTag",
-        "important"
-      ],
+      "tags": ["main", "oneMoreTag", "important"],
       "id": "123446214124124",
       "completed": false,
-      "timeMatches": false,
-      "description": "test description"
+      "timeMatches": true,
+      "description": "test description",
+      "date": "",
+      "time": false,
+      "deleted": false
     },
     {
       "title": "main task3",
-      "tags": [
-        "best"
-      ],
+      "tags": ["best"],
       "id": "1235464214124124",
       "completed": false,
       "timeMatches": true,
@@ -98,9 +90,7 @@
     },
     {
       "title": "main task4",
-      "tags": [
-        "important"
-      ],
+      "tags": ["important"],
       "id": "12321412465124",
       "completed": false,
       "timeMatches": true,
@@ -108,20 +98,15 @@
     },
     {
       "title": "main task5",
-      "tags": [
-        "main",
-        "important"
-      ],
+      "tags": ["main", "important"],
       "id": "122433214124124",
       "completed": false,
-      "timeMatches": true,
+      "timeMatches": false,
       "description": ""
     },
     {
       "title": "main task6",
-      "tags": [
-        "important"
-      ],
+      "tags": ["important"],
       "id": "12321412442124",
       "completed": true,
       "timeMatches": true,
@@ -129,10 +114,7 @@
     },
     {
       "title": "main task7",
-      "tags": [
-        "important",
-        "123312"
-      ],
+      "tags": ["important", "123312"],
       "id": "12321544124124",
       "completed": true,
       "timeMatches": false,
@@ -146,24 +128,18 @@
       "description": "",
       "completed": false,
       "deleted": false,
-      "tags": [
-        "supertag",
-        "superTag"
-      ],
+      "tags": ["supertag", "superTag"],
       "timeMatches": true
     },
     {
       "id": "1663233414418",
-      "date": "2022-09-20T21:00:00.000Z",
+      "date": "2022-09-21T20:59:59.000Z",
       "time": false,
       "title": "new super puper task",
       "description": "",
       "completed": false,
       "deleted": false,
-      "tags": [
-        "goodTag",
-        "newGoodTag"
-      ],
+      "tags": ["newGoodTag"],
       "timeMatches": true
     },
     {
@@ -174,10 +150,7 @@
       "description": "",
       "completed": false,
       "deleted": false,
-      "tags": [
-        "goodTag",
-        "oldGoodTag"
-      ],
+      "tags": ["goodTag", "oneMoreTag"],
       "timeMatches": true
     }
   ]
