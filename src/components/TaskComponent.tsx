@@ -1,4 +1,5 @@
 import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
+import formatRelative from 'date-fns/formatRelative';
 
 import Checkbox from './Checkbox';
 import TagComponent from './TagComponent';
@@ -42,6 +43,18 @@ const TaskComponent: FC<TaskComponentProps> = ({
     selected ? 'bg-slate-600' : 'hover:bg-slate-700'
   } ${task?.completed && ' opacity-30'}`;
 
+  const formatDate = () => {
+    if (task) {
+      const formattedDate = formatRelative(new Date(task.date), new Date());
+
+      if (!task.time) {
+        const atIndex = formattedDate.search(/at\s\d+:\d{2}/);
+        return atIndex !== -1 ? formattedDate.slice(0, atIndex) : formattedDate;
+      }
+      return formattedDate;
+    }
+  };
+
   return (
     <li className={taskClass} {...props}>
       <div className="flex gap-1 items-center">
@@ -59,11 +72,7 @@ const TaskComponent: FC<TaskComponentProps> = ({
             removeTag={() => onRemoveTag(tag)}
           />
         ))}
-        {task?.date && (
-          <span className="ml-4">{`${new Date(
-            task.date
-          ).toDateString()}`}</span>
-        )}
+        {task?.date && <span className="ml-4">{formatDate()}</span>}
       </div>
     </li>
   );

@@ -1,15 +1,12 @@
-import { Filters } from './Filters';
-
 export interface ITask {
   id: string;
-  date?: string;
-  time?: boolean;
+  date: string;
+  time: boolean;
   title: string;
   description: string;
-  completed: boolean;
-  deleted?: boolean;
+  completed: string;
+  deleted: boolean;
   tags: string[];
-  timeMatches?: boolean;
 }
 
 export class Task implements ITask {
@@ -18,10 +15,9 @@ export class Task implements ITask {
   time: boolean;
   title: string;
   description: string;
-  completed: boolean;
+  completed: string;
   deleted: boolean;
   tags: string[];
-  timeMatches: boolean;
 
   constructor({
     title,
@@ -30,7 +26,7 @@ export class Task implements ITask {
     date = '',
     time = false,
     description = '',
-    completed = false,
+    completed = '',
     deleted = false,
   }: {
     title: string;
@@ -39,11 +35,11 @@ export class Task implements ITask {
     date?: string;
     time?: boolean;
     description?: string;
-    completed?: boolean;
+    completed?: string;
     deleted?: boolean;
   }) {
     this.id = id ? id : new Date().getTime().toString();
-    this.date = time ? this.adjustDate(date) : date;
+    this.date = time || !date ? date : this.adjustDate(date);
     this.time = time;
 
     [this.title, this.tags] = this.parseTitle(title);
@@ -52,7 +48,7 @@ export class Task implements ITask {
     this.completed = completed;
     this.deleted = deleted;
     this.description = description;
-    this.timeMatches = true;
+    this.completed = completed;
   }
 
   // function splitting string into title and tags
@@ -74,25 +70,7 @@ export class Task implements ITask {
 
   private adjustDate(date: string): string {
     return new Date(
-      new Date(new Date(new Date(date).setHours(23)).setMinutes(59)).setSeconds(
-        59
-      )
+      new Date(new Date(date).setHours(23)).setMinutes(59)
     ).toISOString();
-  }
-
-  static checkDate(task: ITask, filter: Filters): boolean {
-    if (!task.date) return true;
-    const date = new Date(task.date);
-    switch (filter) {
-      case Filters.TODAY:
-        return date.getDate() === new Date().getDate();
-      case Filters.WEEK:
-        const dayStart = new Date(
-          new Date(new Date().setHours(0)).setMinutes(0)
-        );
-        return date.getTime() < dayStart.setDate(dayStart.getDate() + 7);
-      default:
-        return true;
-    }
   }
 }

@@ -4,7 +4,6 @@ import { RootState } from '../app/store';
 import { countTasksByFilter } from '../app/tasksSlice';
 import { Filters } from '../models/Filters';
 import { ITag } from '../models/Tag';
-// import { ReactComponent as MenuIcon } from '../assets/ellipsis.svg';
 
 interface FilterProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
@@ -28,13 +27,12 @@ const FilterComponent: FC<FilterProps> = ({
   }`;
 
   const counter = useAppSelector((state: RootState) =>
-    countTasksByFilter(state, tag ? tag.id : filter)
+    countTasksByFilter(state, tag ? tag.id : filter || '')
   );
 
   return (
     <li className={filterClass} {...props}>
       <div className="flex gap-1">
-        {/* {tag && selected && <MenuIcon />} */}
         {children}
         {title}
       </div>

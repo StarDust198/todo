@@ -36,6 +36,8 @@ const AddTaskInput = () => {
         setAddRequestStatus(LoadingStates.LOADING);
         await dispatch(addNewTask(newTask)).unwrap();
         setTitle('');
+        setTime(false);
+        setTaskDate(null);
       } catch (err) {
         console.error('Failed to add new task: ', err);
       } finally {

@@ -68,6 +68,14 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
       <div className="p-4 flex flex-col">
         <ul className="border-b border-slate-500 py-2">
           <FilterComponent
+            onClick={() => dispatch(setActiveFilter(Filters.INCOMING))}
+            title="Incoming"
+            selected={activeFilter === Filters.INCOMING}
+            filter={Filters.INCOMING}
+          >
+            <IncomingIcon />
+          </FilterComponent>
+          <FilterComponent
             onClick={() => dispatch(setActiveFilter(Filters.TODAY))}
             title="Today"
             selected={activeFilter === Filters.TODAY}
@@ -77,22 +85,14 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
           </FilterComponent>
           <FilterComponent
             onClick={() => dispatch(setActiveFilter(Filters.WEEK))}
-            title="Next 7 days"
+            title="This week"
             selected={activeFilter === Filters.WEEK}
             filter={Filters.WEEK}
           >
             <CalendarIcon />
           </FilterComponent>
-          <FilterComponent
-            onClick={() => dispatch(setActiveFilter(Filters.INCOMING))}
-            title="Incoming"
-            selected={activeFilter === Filters.INCOMING}
-            filter={Filters.INCOMING}
-          >
-            <IncomingIcon />
-          </FilterComponent>
         </ul>
-        {tagsArr.length && (
+        {!!tagsArr.length && (
           <ul className="border-b border-slate-500 py-2">
             {tagsArr.map((tag) => (
               <FilterComponent

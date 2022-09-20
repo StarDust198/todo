@@ -1,157 +1,177 @@
 {
   "tags": [
     {
-      "id": "main",
-      "color": "bg-blue-800"
+      "id": "homework",
+      "color": "bg-lime-800"
     },
     {
-      "id": "important",
-      "color": "bg-violet-800"
+      "id": "sleep",
+      "color": "bg-emerald-800"
     },
     {
-      "id": "best",
-      "color": "bg-teal-800"
+      "id": "type",
+      "color": "bg-lime-800"
     },
     {
-      "id": "supertag",
-      "color": "bg-green-800"
-    },
-    {
-      "id": "tempTag",
-      "color": "bg-cyan-800"
+      "id": "something",
+      "color": "bg-fuchsia-800"
     },
     {
       "id": "newTag",
+      "color": "bg-emerald-800"
+    },
+    {
+      "id": "webdev",
       "color": "bg-blue-800"
     },
     {
-      "id": "superTag",
-      "color": "bg-fuchsia-800"
+      "id": "gutenTag",
+      "color": "bg-green-800"
     },
     {
-      "id": "123312",
+      "id": "temp",
       "color": "bg-blue-800"
-    },
-    {
-      "id": "2134",
-      "color": "bg-fuchsia-800"
-    },
-    {
-      "id": "goodTag",
-      "color": "bg-sky-800"
-    },
-    {
-      "id": "oneMoreTag",
-      "color": "bg-fuchsia-800"
-    },
-    {
-      "id": "oneMoretag",
-      "color": "bg-amber-800"
-    },
-    {
-      "id": "newGoodTag",
-      "color": "bg-yellow-800"
-    },
-    {
-      "id": "oldGoodTag",
-      "color": "bg-purple-800"
     }
   ],
   "tasks": [
     {
-      "title": "main task",
-      "tags": ["main", "newTag", "oneMoreTag"],
-      "id": "123214124124",
-      "completed": false,
-      "timeMatches": false,
-      "description": "1234",
+      "id": "1663443271596",
+      "date": "2022-09-17T21:00:00.000Z",
+      "time": false,
+      "title": "Finish homework",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "homework"
+      ]
+    },
+    {
+      "id": "1663443300994",
+      "date": "2022-09-16T21:00:00.000Z",
+      "time": false,
+      "title": "sleep well",
+      "description": "",
+      "completed": "2022-09-18T06:59:45.292Z",
+      "deleted": false,
+      "tags": [
+        "sleep"
+      ]
+    },
+    {
+      "id": "1663443872250",
+      "date": "2022-09-24T21:00:00.000Z",
+      "time": true,
+      "title": "learn to type fast",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "type",
+        "newTag"
+      ]
+    },
+    {
+      "id": "1663443966868",
+      "date": "2022-09-18T20:59:00.000Z",
+      "time": false,
+      "title": "finish another homework",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "homework"
+      ]
+    },
+    {
+      "id": "1663444155265",
+      "date": "2022-09-17T22:00:00.000Z",
+      "time": true,
+      "title": "try something",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "something"
+      ]
+    },
+    {
+      "id": "1663484776416",
+      "date": "2022-09-18T21:00:00.000Z",
+      "time": true,
+      "title": "sleep another day",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "sleep"
+      ]
+    },
+    {
+      "id": "1663574583676",
+      "date": "2022-09-21T12:00:00.000Z",
+      "time": true,
+      "title": "make best todo app",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "webdev"
+      ]
+    },
+    {
+      "id": "1663587251086",
+      "date": "2022-09-26T20:59:00.000Z",
+      "time": false,
+      "title": "new task not soon",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "gutenTag"
+      ]
+    },
+    {
+      "id": "1663595773954",
       "date": "",
       "time": false,
-      "deleted": false
-    },
-    {
-      "title": "main task2",
-      "tags": ["main", "oneMoreTag", "important"],
-      "id": "123446214124124",
-      "completed": false,
-      "timeMatches": true,
-      "description": "test description",
-      "date": "",
-      "time": false,
-      "deleted": false
-    },
-    {
-      "title": "main task3",
-      "tags": ["best"],
-      "id": "1235464214124124",
-      "completed": false,
-      "timeMatches": true,
-      "description": ""
-    },
-    {
-      "title": "main task4",
-      "tags": ["important"],
-      "id": "12321412465124",
-      "completed": false,
-      "timeMatches": true,
-      "description": ""
-    },
-    {
-      "title": "main task5",
-      "tags": ["main", "important"],
-      "id": "122433214124124",
-      "completed": false,
-      "timeMatches": false,
-      "description": ""
-    },
-    {
-      "title": "main task6",
-      "tags": ["important"],
-      "id": "12321412442124",
-      "completed": true,
-      "timeMatches": true,
-      "description": ""
-    },
-    {
-      "title": "main task7",
-      "tags": ["important", "123312"],
-      "id": "12321544124124",
-      "completed": true,
-      "timeMatches": false,
-      "description": ""
-    },
-    {
-      "id": "1662836840610",
-      "date": null,
-      "time": false,
-      "title": "qwerty",
+      "title": "temp task",
       "description": "",
-      "completed": false,
+      "completed": "",
       "deleted": false,
-      "tags": ["supertag", "superTag"],
-      "timeMatches": true
+      "tags": []
     },
     {
-      "id": "1663233414418",
-      "date": "2022-09-21T20:59:59.000Z",
-      "time": false,
-      "title": "new super puper task",
+      "id": "1663597019324",
+      "date": "2022-09-20T02:00:00.000Z",
+      "time": true,
+      "title": "temp task 2",
       "description": "",
-      "completed": false,
+      "completed": "2022-09-19T14:20:05.100Z",
       "deleted": false,
-      "tags": ["newGoodTag"],
-      "timeMatches": true
+      "tags": [
+        "temp"
+      ]
     },
     {
-      "id": "1663236669482",
-      "date": "",
-      "time": false,
-      "title": "new super task",
+      "id": "1663609573760",
+      "date": "2022-09-20T21:00:00.000Z",
+      "time": true,
+      "title": "Add new task",
       "description": "",
-      "completed": false,
+      "completed": "",
       "deleted": false,
-      "tags": ["goodTag", "oneMoreTag"],
-      "timeMatches": true
+      "tags": []
+    },
+    {
+      "id": "1663613010466",
+      "date": "2022-09-27T20:59:00.000Z",
+      "time": false,
+      "title": "new task",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": []
     }
   ]
 }

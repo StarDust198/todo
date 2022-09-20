@@ -21,7 +21,7 @@ interface filtersState extends EntityState<ITag> {
 }
 
 const initialState: filtersState = filtersAdapter.getInitialState({
-  activeFilter: Filters.TODAY,
+  activeFilter: Filters.INCOMING,
   activeTags: [],
   status: LoadingStates.IDLE,
   error: null,
