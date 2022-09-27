@@ -10,6 +10,8 @@ import { ITag } from '../models/Tag';
 import { LoadingStates } from '../models/LoadingStates';
 import { Filters } from '../models/Filters';
 import type { RootState } from './store';
+// import { selectAllTasks, updateTask } from './tasksSlice';
+// import { filterTags, selectAllTasks, updateTask } from './tasksSlice';
 
 const filtersAdapter = createEntityAdapter<ITag>();
 
@@ -43,6 +45,20 @@ export const addNewTag = createAsyncThunk(
 export const deleteTag = createAsyncThunk(
   'filters/deleteTag',
   async (tagName: string) => {
+    // const { getState, dispatch } = thunkAPI;
+    // const state = getState() as RootState;
+    // const tasks = selectAllTasks(state);
+    // tasks.forEach((task) => {
+    //   if (task.tags.includes(tagName))
+    //     dispatch(
+    //       updateTask({
+    //         taskId: task.id,
+    //         changes: {
+    //           tags: [...task.tags.filter((item) => item !== tagName)],
+    //         },
+    //       })
+    //     );
+    // });
     await axios.delete(`http://localhost:3001/tags/${tagName}`);
     return tagName;
   }

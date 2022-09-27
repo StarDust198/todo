@@ -7,7 +7,6 @@ import { ITag } from '../models/Tag';
 
 interface FilterProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
-  title: string;
   children?: ReactNode | null;
   tag?: ITag;
   filter?: Filters;
@@ -15,7 +14,6 @@ interface FilterProps
 }
 
 const FilterComponent: FC<FilterProps> = ({
-  title,
   children = null,
   tag,
   filter,
@@ -34,7 +32,7 @@ const FilterComponent: FC<FilterProps> = ({
     <li className={filterClass} {...props}>
       <div className="flex gap-1">
         {children}
-        {title}
+        {tag ? tag.id : filter}
       </div>
       <div className="flex w-10 justify-between items-center flex-row-reverse">
         <div className="text-xs">{counter}</div>

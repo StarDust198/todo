@@ -6,6 +6,8 @@ import {
   fetchTasks,
   setActiveTask,
   selectFilteredTaskIds,
+  updateTask,
+  deleteTask,
 } from '../app/tasksSlice';
 import { LoadingStates } from '../models/LoadingStates';
 
@@ -14,6 +16,7 @@ import Loader from './Loader';
 import ErrorMessage from './ErrorMessage';
 import TaskComponent from './TaskComponent';
 import ContextMenu from './ContextMenu';
+import { Filters } from '../models/Filters';
 
 interface TaskListComponentProps {}
 
@@ -21,7 +24,7 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
   const dispatch = useAppDispatch();
   const contextMenuRef = createRef<HTMLUListElement>();
 
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState('');
   const activeTask = useAppSelector(
     (state: RootState) => state.tasks.activeTask
   );
@@ -32,7 +35,7 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
   const tasksStatus = useAppSelector((state: RootState) => state.tasks.status);
   const tasksError = useAppSelector((state: RootState) => state.tasks.error);
 
-  const { completed, incoming, overdue, deleted } = useAppSelector(
+  const { completed, incoming, overdue, deleted, all } = useAppSelector(
     selectFilteredTaskIds
   );
 
@@ -42,14 +45,35 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
     }
   }, [tasksStatus, dispatch]);
 
+  useEffect(() => {
+    if (!all.includes(activeTask)) {
+      dispatch(setActiveTask(''));
+    }
+  }, [all, activeTask, dispatch]);
+
   // Context menu
-  const onContextMenu = (event: MouseEvent<HTMLLIElement>) => {
+  const onContextMenu = (event: MouseEvent<HTMLLIElement>, taskId: string) => {
     event.preventDefault();
     if (contextMenuRef.current) {
-      contextMenuRef.current.style.top = `${event.clientY}px`;
-      contextMenuRef.current.style.left = `${event.clientX}px`;
+      contextMenuRef.current.style.top = `${event.pageY}px`;
+      contextMenuRef.current.style.left = `${event.pageX}px`;
     }
-    setMenuOpen((menuOpen) => !menuOpen);
+    setMenuOpen(taskId);
+  };
+
+  const onDeleteTask = () => {
+    try {
+      if (activeFilter === Filters.DELETED) {
+        dispatch(deleteTask(menuOpen)).unwrap();
+      } else {
+        dispatch(
+          updateTask({ taskId: menuOpen, changes: { deleted: true } })
+        ).unwrap();
+      }
+      setMenuOpen('');
+    } catch (err) {
+      console.error(`Failed to delete task id: ${menuOpen}, error: `, err);
+    }
   };
 
   const ulClass = `flex-col bg-slate-800 z-10 absolute 
@@ -63,7 +87,7 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
         key={taskId}
         taskId={taskId}
         onClick={() => dispatch(setActiveTask(taskId))}
-        onContextMenu={onContextMenu}
+        onContextMenu={(e) => onContextMenu(e, taskId)}
         selected={activeTask === taskId}
       />
     ));
@@ -72,8 +96,8 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
   return (
     <div
       className="bg-slate-800"
-      onMouseLeave={() => setMenuOpen(false)}
-      onClick={() => setMenuOpen(false)}
+      onMouseLeave={() => setMenuOpen('')}
+      onClick={() => setMenuOpen('')}
     >
       <div className="p-4">
         <h1 className="text-2xl font-extrabold">{activeFilter}</h1>
@@ -90,7 +114,7 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
         )}
         {!!incoming.length && (
           <>
-            <h3 className="py-1">Incoming:</h3>
+            <h3 className="py-1">{activeFilter}:</h3>
             <ul>{mapTasks(incoming)}</ul>
           </>
         )}
@@ -108,8 +132,10 @@ const TaskListComponent: FC<TaskListComponentProps> = () => {
         )}
         {/* <h2>'No tasks available yet.. Add some!'</h2> */}
       </div>
-      <ContextMenu open={menuOpen} className={ulClass} ref={contextMenuRef}>
-        <li className={liClass}>Delete task</li>
+      <ContextMenu open={!!menuOpen} className={ulClass} ref={contextMenuRef}>
+        <li className={liClass} onClick={onDeleteTask}>
+          {activeFilter === Filters.DELETED ? 'Delete forever' : 'Delete task'}
+        </li>
       </ContextMenu>
     </div>
   );

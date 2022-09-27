@@ -7,12 +7,14 @@ export enum Filters {
 }
 
 export class FilterGroup {
+  public all: string[];
   public incoming: string[];
   public completed: string[];
   public overdue: string[];
   public deleted: string[];
 
   constructor() {
+    this.all = [];
     this.incoming = [];
     this.completed = [];
     this.overdue = [];

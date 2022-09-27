@@ -1,6 +1,7 @@
 import { FC, FocusEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import DatePicker from 'react-datepicker';
+import formatRelative from 'date-fns/formatRelative';
 
 import type { RootState } from '../app/store';
 import {
@@ -44,14 +45,16 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
 
   const onDateChange = (date: Date) => {
     if (task) {
-      dispatch(updateTask({ ...task, date: date.toISOString() }));
+      dispatch(
+        updateTask({ taskId: task.id, changes: { date: date.toISOString() } })
+      );
       setTaskDate(date);
     }
   };
 
   const onSwitchTime = () => {
     if (task) {
-      dispatch(updateTask({ ...task, time: !time }));
+      dispatch(updateTask({ taskId: task.id, changes: { time: !time } }));
       setTime((time) => !time);
     }
   };
@@ -85,7 +88,12 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
       dispatch(addNewTag(new Tag(tgt.value)));
     if (tgt.value && task)
       if (!task.tags.includes(tgt.value)) {
-        dispatch(updateTask({ ...task, tags: [...task.tags, tgt.value] }));
+        dispatch(
+          updateTask({
+            taskId: task.id,
+            changes: { tags: [...task.tags, tgt.value] },
+          })
+        );
       } else {
         setNewTag('');
         tgt.style.width = '';
@@ -161,7 +169,9 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
           placeholder="Description"
           onInput={onDescrInput}
           value={description}
-          onBlur={() => dispatch(updateTask({ ...task, description }))}
+          onBlur={() =>
+            dispatch(updateTask({ taskId: task.id, changes: { description } }))
+          }
         />
         <div className="py-2 flex flex-wrap gap-2">
           {task.tags.map((item) => (
@@ -171,8 +181,10 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
               removeTag={() =>
                 dispatch(
                   updateTask({
-                    ...task,
-                    tags: [...task.tags.filter((tag) => tag !== item)],
+                    taskId: task.id,
+                    changes: {
+                      tags: [...task.tags.filter((tag) => tag !== item)],
+                    },
                   })
                 )
               }
@@ -190,6 +202,11 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
             />
           </span>
         </div>
+        {task.completed && (
+          <div className="text-xs opacity-50">
+            Completed: {formatRelative(new Date(task.completed), new Date())}
+          </div>
+        )}
       </div>
     </div>
   );

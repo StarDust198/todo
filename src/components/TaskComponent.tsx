@@ -4,14 +4,12 @@ import formatRelative from 'date-fns/formatRelative';
 import Checkbox from './Checkbox';
 import TagComponent from './TagComponent';
 import {
-  // deleteTask,
   updateTask,
   switchCompletionTask,
   selectTaskById,
 } from '../app/tasksSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { RootState } from '../app/store';
-import { Task } from '../models/Task';
 
 interface TaskComponentProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
@@ -31,17 +29,18 @@ const TaskComponent: FC<TaskComponentProps> = ({
 
   const onRemoveTag = (tag: string): void => {
     if (task) {
-      const updatedTask = {
-        ...task,
-        tags: [...task.tags.filter((item) => item !== tag)],
-      };
-      dispatch(updateTask(new Task(updatedTask)));
+      dispatch(
+        updateTask({
+          taskId: task.id,
+          changes: { tags: [...task.tags.filter((item) => item !== tag)] },
+        })
+      );
     }
   };
 
   const taskClass = `flex py-1 justify-between text-sm border-b border-slate-500 ${
     selected ? 'bg-slate-600' : 'hover:bg-slate-700'
-  } ${task?.completed && ' opacity-30'}`;
+  } ${(task?.completed || task?.deleted) && ' opacity-30'}`;
 
   const formatDate = () => {
     if (task) {

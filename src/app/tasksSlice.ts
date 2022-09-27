@@ -44,7 +44,7 @@ export const addNewTask = createAsyncThunk(
   'tasks/addNewTask',
   async (task: ITask, thunkAPI) => {
     const { getState, dispatch } = thunkAPI;
-    const initialTags = [...selectTagNames(getState() as RootState)];
+    const initialTags = selectTagNames(getState() as RootState);
     task.tags.forEach((tag) => {
       if (!initialTags.includes(tag)) dispatch(addNewTag(new Tag(tag)));
     });
@@ -58,7 +58,7 @@ export const addNewTask = createAsyncThunk(
 
 export const deleteTask = createAsyncThunk(
   'tasks/deleteTask',
-  async (taskId: number) => {
+  async (taskId: string) => {
     await axios.delete(`http://localhost:3001/tasks/${taskId}`);
     return taskId;
   }
@@ -82,14 +82,20 @@ export const switchCompletionTask = createAsyncThunk(
 
 export const updateTask = createAsyncThunk(
   'tasks/updateTask',
-  async (task: ITask, thunkAPI) => {
+  async (
+    { taskId, changes }: { taskId: string; changes: Partial<ITask> },
+    thunkAPI
+  ) => {
     const { getState, dispatch } = thunkAPI;
-    const initialTags = [...selectTagNames(getState() as RootState)];
-    task.tags.forEach((tag) => {
-      if (!initialTags.includes(tag)) dispatch(addNewTag(new Tag(tag)));
-    });
-    await axios.patch<ITask>(`http://localhost:3001/tasks/${task.id}`, task);
-    return { id: task.id, changes: { ...task } };
+    const state = getState() as RootState;
+    const initialTags = selectTagNames(state);
+    if (changes.tags) {
+      changes.tags.forEach((tag) => {
+        if (!initialTags.includes(tag)) dispatch(addNewTag(new Tag(tag)));
+      });
+    }
+    await axios.patch<ITask>(`http://localhost:3001/tasks/${taskId}`, changes);
+    return { id: taskId, changes };
   }
 );
 
@@ -139,13 +145,18 @@ export const countTasksByFilter = createSelector(
     switch (filter) {
       case Filters.TODAY:
         return tasks.filter(
-          (task) => !task.completed && task.date && checkDay(task.date)
+          (task) =>
+            !task.completed && !task.deleted && task.date && checkDay(task.date)
         ).length;
       case Filters.INCOMING:
-        return tasks.filter((task) => !task.completed).length;
+        return tasks.filter((task) => !task.completed && !task.deleted).length;
       case Filters.WEEK:
         return tasks.filter(
-          (task) => !task.completed && task.date && checkWeek(task.date)
+          (task) =>
+            !task.completed &&
+            !task.deleted &&
+            task.date &&
+            checkWeek(task.date)
         ).length;
       case Filters.DELETED:
         return tasks.filter((task) => task.deleted).length;
@@ -165,7 +176,7 @@ export const selectTaggedTasks = createSelector(
   (tasks, activeTags) => {
     return activeTags.length
       ? tasks.filter((task) =>
-          activeTags.some((tag) => task.tags.includes(tag))
+          activeTags.some((tag: string) => task.tags.includes(tag))
         )
       : tasks;
   }
@@ -177,12 +188,18 @@ export const selectFilteredTaskIds = createSelector(
     switch (activeFilter) {
       case Filters.INCOMING:
         const tasksIncoming = new FilterGroup();
+
         tasks.forEach((task: ITask) => {
-          if (task.completed) {
-            tasksIncoming.completed.push(task.id);
-          } else if (!task.date || checkIncoming(task.date)) {
-            tasksIncoming.incoming.push(task.id);
-          } else tasksIncoming.overdue.push(task.id);
+          if (!task.deleted) {
+            if (task.completed) {
+              tasksIncoming.completed.push(task.id);
+            } else if (!task.date || checkIncoming(task.date)) {
+              tasksIncoming.incoming.push(task.id);
+            } else {
+              tasksIncoming.overdue.push(task.id);
+            }
+            tasksIncoming.all.push(task.id);
+          }
         });
         return tasksIncoming;
 
@@ -190,19 +207,24 @@ export const selectFilteredTaskIds = createSelector(
         const tasksToday = new FilterGroup();
 
         tasks.forEach((task: ITask) => {
-          if (
-            !task.completed &&
-            (!task.date || (checkDay(task.date) && checkIncoming(task.date)))
-          ) {
-            tasksToday.incoming.push(task.id);
-          } else if (checkDay(task.completed)) {
-            tasksToday.completed.push(task.id);
-          } else if (
-            !task.completed &&
-            task.date &&
-            !checkIncoming(task.date)
-          ) {
-            tasksToday.overdue.push(task.id);
+          if (!task.deleted) {
+            if (
+              !task.completed &&
+              (!task.date || (checkDay(task.date) && checkIncoming(task.date)))
+            ) {
+              tasksToday.incoming.push(task.id);
+              tasksToday.all.push(task.id);
+            } else if (checkDay(task.completed)) {
+              tasksToday.completed.push(task.id);
+              tasksToday.all.push(task.id);
+            } else if (
+              !task.completed &&
+              task.date &&
+              !checkIncoming(task.date)
+            ) {
+              tasksToday.overdue.push(task.id);
+              tasksToday.all.push(task.id);
+            }
           }
         });
         return tasksToday;
@@ -211,19 +233,24 @@ export const selectFilteredTaskIds = createSelector(
         const tasksWeek = new FilterGroup();
 
         tasks.forEach((task: ITask) => {
-          if (
-            !task.completed &&
-            (!task.date || (checkWeek(task.date) && checkIncoming(task.date)))
-          ) {
-            tasksWeek.incoming.push(task.id);
-          } else if (checkWeek(task.completed)) {
-            tasksWeek.completed.push(task.id);
-          } else if (
-            !task.completed &&
-            task.date &&
-            !checkIncoming(task.date)
-          ) {
-            tasksWeek.overdue.push(task.id);
+          if (!task.deleted) {
+            if (
+              !task.completed &&
+              (!task.date || (checkWeek(task.date) && checkIncoming(task.date)))
+            ) {
+              tasksWeek.incoming.push(task.id);
+              tasksWeek.all.push(task.id);
+            } else if (checkWeek(task.completed)) {
+              tasksWeek.completed.push(task.id);
+              tasksWeek.all.push(task.id);
+            } else if (
+              !task.completed &&
+              task.date &&
+              !checkIncoming(task.date)
+            ) {
+              tasksWeek.overdue.push(task.id);
+              tasksWeek.all.push(task.id);
+            }
           }
         });
         return tasksWeek;
@@ -231,8 +258,9 @@ export const selectFilteredTaskIds = createSelector(
       case Filters.COMPLETED:
         const tasksCompleted = new FilterGroup();
         tasksCompleted.completed = tasks
-          .filter((task) => task.completed)
+          .filter((task) => task.completed && !task.deleted)
           .map((task) => task.id);
+        tasksCompleted.all = [...tasksCompleted.completed];
         return tasksCompleted;
 
       case Filters.DELETED:
@@ -240,6 +268,7 @@ export const selectFilteredTaskIds = createSelector(
         tasksDeleted.deleted = tasks
           .filter((task) => task.deleted)
           .map((task) => task.id);
+        tasksDeleted.all = [...tasksDeleted.deleted];
         return tasksDeleted;
     }
   }

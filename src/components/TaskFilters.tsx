@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 import { ITag } from '../models/Tag';
 import {
+  deleteTag,
   fetchTags,
   selectAllTags,
   setActiveFilter,
@@ -20,13 +21,15 @@ import { ReactComponent as CompletedIcon } from '../assets/completed.svg';
 import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import FilterComponent from './FilterComponent';
 import ContextMenu from './ContextMenu';
+import { ITask } from '../models/Task';
+import { selectAllTasks, updateTask } from '../app/tasksSlice';
 
 interface TaskFiltersProps {}
 
 const TaskFilters: FC<TaskFiltersProps> = () => {
   const dispatch = useAppDispatch();
 
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState('');
   const contextMenuRef = createRef<HTMLUListElement>();
 
   const activeFilter = useAppSelector(
@@ -38,6 +41,7 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
   const tagsStatus = useAppSelector((state: RootState) => state.filters.status);
   // const tagsError = useAppSelector((state: RootState) => state.filters.error);
   const tagsArr: ITag[] = useAppSelector(selectAllTags);
+  const tasks: ITask[] = useAppSelector(selectAllTasks);
 
   useEffect(() => {
     if (tagsStatus === LoadingStates.IDLE) {
@@ -45,13 +49,13 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
     }
   }, [tagsStatus, dispatch]);
 
-  const onContextMenu = (event: MouseEvent<HTMLLIElement>) => {
+  const onContextMenu = (event: MouseEvent<HTMLLIElement>, tagId: string) => {
     event.preventDefault();
     if (contextMenuRef.current) {
-      contextMenuRef.current.style.top = `${event.clientY}px`;
-      contextMenuRef.current.style.left = `${event.clientX}px`;
+      contextMenuRef.current.style.top = `${event.pageY}px`;
+      contextMenuRef.current.style.left = `${event.pageX}px`;
     }
-    setMenuOpen((menuOpen) => !menuOpen);
+    setMenuOpen(tagId);
   };
 
   const ulClass = `flex-col bg-slate-800 z-10 absolute 
@@ -59,17 +63,34 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
      overflow-hidden ${menuOpen ? 'flex' : 'hidden'}`;
   const liClass = 'border-b border-slate-500 hover:bg-slate-700 p-1 text-sm';
 
+  const onDeleteTag = async () => {
+    try {
+      await dispatch(deleteTag(menuOpen));
+      tasks.forEach((task) => {
+        if (task.tags.includes(menuOpen))
+          dispatch(
+            updateTask({
+              taskId: task.id,
+              changes: { tags: task.tags.filter((tag) => tag !== menuOpen) },
+            })
+          );
+      });
+      setMenuOpen('');
+    } catch (err) {
+      console.error(`Failed to delete tag id: ${menuOpen}, error: `, err);
+    }
+  };
+
   return (
     <div
       className="bg-slate-800"
-      onMouseLeave={() => setMenuOpen(false)}
-      onClick={() => setMenuOpen(false)}
+      onMouseLeave={() => setMenuOpen('')}
+      onClick={() => setMenuOpen('')}
     >
       <div className="p-4 flex flex-col">
         <ul className="border-b border-slate-500 py-2">
           <FilterComponent
             onClick={() => dispatch(setActiveFilter(Filters.INCOMING))}
-            title="Incoming"
             selected={activeFilter === Filters.INCOMING}
             filter={Filters.INCOMING}
           >
@@ -77,7 +98,6 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
           </FilterComponent>
           <FilterComponent
             onClick={() => dispatch(setActiveFilter(Filters.TODAY))}
-            title="Today"
             selected={activeFilter === Filters.TODAY}
             filter={Filters.TODAY}
           >
@@ -85,7 +105,6 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
           </FilterComponent>
           <FilterComponent
             onClick={() => dispatch(setActiveFilter(Filters.WEEK))}
-            title="This week"
             selected={activeFilter === Filters.WEEK}
             filter={Filters.WEEK}
           >
@@ -97,10 +116,9 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
             {tagsArr.map((tag) => (
               <FilterComponent
                 tag={tag}
-                title={tag.id}
                 key={tag.id}
                 onClick={() => dispatch(switchActiveTag(tag.id))}
-                onContextMenu={onContextMenu}
+                onContextMenu={(e) => onContextMenu(e, tag.id)}
                 selected={activeTags.includes(tag.id)}
               >
                 <TagIcon className="w-4" />
@@ -111,7 +129,6 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
         <ul className="py-2">
           <FilterComponent
             onClick={() => dispatch(setActiveFilter(Filters.COMPLETED))}
-            title="Completed"
             selected={activeFilter === Filters.COMPLETED}
             filter={Filters.COMPLETED}
           >
@@ -119,7 +136,6 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
           </FilterComponent>
           <FilterComponent
             onClick={() => dispatch(setActiveFilter(Filters.DELETED))}
-            title="Deleted"
             selected={activeFilter === Filters.DELETED}
             filter={Filters.DELETED}
           >
@@ -127,10 +143,12 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
           </FilterComponent>
         </ul>
       </div>
-      <ContextMenu open={menuOpen} className={ulClass} ref={contextMenuRef}>
-        <li className={liClass}>Rename tag</li>
-        <li className={liClass}>Change tag color</li>
-        <li className={liClass}>Delete tag</li>
+      <ContextMenu open={!!menuOpen} className={ulClass} ref={contextMenuRef}>
+        {/* <li className={liClass}>Rename tag</li> */}
+        {/* <li className={liClass}>Change tag color</li> */}
+        <li className={liClass} onClick={onDeleteTag}>
+          Delete tag
+        </li>
       </ContextMenu>
     </div>
   );
