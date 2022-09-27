@@ -27,9 +27,7 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
   const task = useAppSelector((state: RootState) =>
     selectTaskById(state, state.tasks.activeTask)
   );
-  const existingTags = useAppSelector((state: RootState) =>
-    selectTagNames(state)
-  );
+  const existingTags = useAppSelector(selectTagNames);
 
   const [description, setDescription] = useState(task ? task.description : '');
   const [newTag, setNewTag] = useState('');
@@ -124,17 +122,6 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
     }
   };
 
-  // const onRemoveTag = (tag: string): void => {
-  //   if (task) {
-  //     dispatch(
-  //       updateTask({
-  //         ...task,
-  //         tags: [...task.tags.filter((item) => item !== tag)],
-  //       })
-  //     );
-  //   }
-  // };
-
   if (!task)
     return (
       <h2 className="p-4 bg-slate-800 text-center">
@@ -169,7 +156,7 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
           placeholder="Description"
           onInput={onDescrInput}
           value={description}
-          onBlur={() =>
+          onBlur={(e) =>
             dispatch(updateTask({ taskId: task.id, changes: { description } }))
           }
         />

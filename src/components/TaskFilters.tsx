@@ -23,6 +23,7 @@ import FilterComponent from './FilterComponent';
 import ContextMenu from './ContextMenu';
 import { ITask } from '../models/Task';
 import { selectAllTasks, updateTask } from '../app/tasksSlice';
+import { deactivateTag } from '../app/filtersSlice';
 
 interface TaskFiltersProps {}
 
@@ -65,6 +66,7 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
 
   const onDeleteTag = async () => {
     try {
+      dispatch(deactivateTag(menuOpen));
       await dispatch(deleteTag(menuOpen));
       tasks.forEach((task) => {
         if (task.tags.includes(menuOpen))

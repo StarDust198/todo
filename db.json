@@ -37,8 +37,28 @@
       "color": "bg-fuchsia-800"
     },
     {
-      "id": "hugTag",
+      "id": "jobTag",
+      "color": "bg-teal-800"
+    },
+    {
+      "id": "resumeTag",
+      "color": "bg-cyan-800"
+    },
+    {
+      "id": "123",
       "color": "bg-yellow-800"
+    },
+    {
+      "id": "hughughug",
+      "color": "bg-blue-800"
+    },
+    {
+      "id": "pamTag",
+      "color": "bg-blue-800"
+    },
+    {
+      "id": "tramTag",
+      "color": "bg-teal-800"
     }
   ],
   "tasks": [
@@ -84,7 +104,7 @@
       "date": "2022-09-18T20:59:00.000Z",
       "time": false,
       "title": "finish another homework",
-      "description": "",
+      "description": "gamarjoba\ngamarjobaa\ngamarjoba",
       "completed": "",
       "deleted": false,
       "tags": [
@@ -179,8 +199,92 @@
       "description": "",
       "completed": "2022-09-27T10:04:43.820Z",
       "deleted": false,
+      "tags": []
+    },
+    {
+      "id": "1664292258964",
+      "date": "",
+      "time": false,
+      "title": "try to add new specific task",
+      "description": "",
+      "completed": "",
+      "deleted": true,
       "tags": [
-        "hugTag"
+        ""
+      ]
+    },
+    {
+      "id": "1664292283022",
+      "date": "",
+      "time": false,
+      "title": "try to add new specific task",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        ""
+      ]
+    },
+    {
+      "id": "1664302240218",
+      "date": "",
+      "time": false,
+      "title": "find new job",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "jobTag"
+      ]
+    },
+    {
+      "id": "1664302408426",
+      "date": "",
+      "time": false,
+      "title": "build resume",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "resumeTag",
+        "jobTag"
+      ]
+    },
+    {
+      "id": "1664302575163",
+      "date": "",
+      "time": false,
+      "title": "give",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": []
+    },
+    {
+      "id": "1664302738554",
+      "date": "",
+      "time": false,
+      "title": "tram pam",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "123",
+        "hughughug",
+        "pamTag"
+      ]
+    },
+    {
+      "id": "1664302940849",
+      "date": "",
+      "time": false,
+      "title": "tram  pam",
+      "description": "",
+      "completed": "",
+      "deleted": false,
+      "tags": [
+        "pamTag",
+        "tramTag"
       ]
     }
   ]

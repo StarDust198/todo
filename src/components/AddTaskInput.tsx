@@ -16,7 +16,7 @@ const AddTaskInput = () => {
   const dispatch = useAppDispatch();
 
   const onTitleChanged = (e: KeyboardEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    setTitle(e.target.value.replace(/[^(\d|\w|#|\s|,|\-)]/g, ''));
   };
 
   const onSwitchTime = () => {

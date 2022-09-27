@@ -45,20 +45,6 @@ export const addNewTag = createAsyncThunk(
 export const deleteTag = createAsyncThunk(
   'filters/deleteTag',
   async (tagName: string) => {
-    // const { getState, dispatch } = thunkAPI;
-    // const state = getState() as RootState;
-    // const tasks = selectAllTasks(state);
-    // tasks.forEach((task) => {
-    //   if (task.tags.includes(tagName))
-    //     dispatch(
-    //       updateTask({
-    //         taskId: task.id,
-    //         changes: {
-    //           tags: [...task.tags.filter((item) => item !== tagName)],
-    //         },
-    //       })
-    //     );
-    // });
     await axios.delete(`http://localhost:3001/tags/${tagName}`);
     return tagName;
   }
@@ -80,6 +66,11 @@ const filtersSlice = createSlice({
         state.activeTags.push(tag);
       }
     },
+    deactivateTag(state: filtersState, action: PayloadAction<string>) {
+      state.activeTags = state.activeTags.filter(
+        (item) => item !== action.payload
+      );
+    },
   },
   extraReducers(builder) {
     builder
@@ -99,7 +90,8 @@ const filtersSlice = createSlice({
   },
 });
 
-export const { setActiveFilter, switchActiveTag } = filtersSlice.actions;
+export const { setActiveFilter, switchActiveTag, deactivateTag } =
+  filtersSlice.actions;
 
 export default filtersSlice.reducer;
 

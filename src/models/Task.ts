@@ -53,19 +53,10 @@ export class Task implements ITask {
 
   // function splitting string into title and tags
   private parseTitle(str: string): [string, string[]] {
-    const inputArr = str.split('#');
-    let taskTitle = inputArr[0];
-
-    const tagsArr = inputArr.slice(1);
-    tagsArr.forEach((item, i) => {
-      const spaceStart = item.indexOf(' ');
-      if (spaceStart !== -1) {
-        taskTitle += item.slice(spaceStart);
-        tagsArr[i] = item.slice(0, spaceStart);
-      }
-    });
-
-    return [taskTitle.trim().replace(/\s{2,}/gm, ` `), tagsArr];
+    const tagsArr = Array.from(str.matchAll(/#(\d|\w)*/g)).map((item) =>
+      item[0].slice(1)
+    );
+    return [str.replace(/#(\d|\w)*/g, ''), tagsArr];
   }
 
   private adjustDate(date: string): string {
