@@ -69,7 +69,7 @@ const TaskFilters: FC<TaskFiltersProps> = () => {
       dispatch(deactivateTag(menuOpen));
       await dispatch(deleteTag(menuOpen));
       tasks.forEach((task) => {
-        if (task.tags.includes(menuOpen))
+        if (task.tags?.includes(menuOpen))
           dispatch(
             updateTask({
               taskId: task.id,
