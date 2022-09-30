@@ -47,7 +47,8 @@ My remaining targets for the app:
 
 - Add autorization & databases for users(Firebase?)
 - Add smooth animations/transitions
-- Possible migration to query library and practice on using it with TypeScript
+- Migration to query library and practice on using it with TypeScript(?)
+- Adapt for mobiles(?)
 
 ## Author
 

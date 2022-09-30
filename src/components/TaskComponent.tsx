@@ -64,7 +64,7 @@ const TaskComponent: FC<TaskComponentProps> = ({
         <span>{task?.title}</span>
       </div>
       <div className="flex gap-1 items-center">
-        {task?.tags.map((tag) => (
+        {task?.tags?.map((tag) => (
           <TagComponent
             key={tag}
             tagName={tag}

@@ -5,9 +5,9 @@ import {
   createSelector,
   createEntityAdapter,
 } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { EntityState } from '@reduxjs/toolkit/dist/entities/models';
 
+import { axiosIns } from './axiosIns';
 import type { RootState } from '../app/store';
 import { ITask } from '../models/Task';
 import { Filters, FilterGroup } from '../models/Filters';
@@ -36,8 +36,8 @@ const initialState: tasksState = tasksAdapter.getInitialState({
 });
 
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
-  const response = await axios.get<ITask[]>('http://localhost:3001/tasks');
-  return response.data;
+  const response = await axiosIns.get<ITask[]>('/tasks.json');
+  return response.data || [];
 });
 
 export const addNewTask = createAsyncThunk(
@@ -48,10 +48,7 @@ export const addNewTask = createAsyncThunk(
     task.tags.forEach((tag) => {
       if (!initialTags.includes(tag)) dispatch(addNewTag(new Tag(tag)));
     });
-    const response = await axios.post<ITask>(
-      'http://localhost:3001/tasks',
-      task
-    );
+    const response = await axiosIns.put<ITask>(`/tasks/${task.id}.json`, task);
     return response.data;
   }
 );
@@ -59,7 +56,7 @@ export const addNewTask = createAsyncThunk(
 export const deleteTask = createAsyncThunk(
   'tasks/deleteTask',
   async (taskId: string) => {
-    await axios.delete(`http://localhost:3001/tasks/${taskId}`);
+    await axiosIns.delete(`/tasks/${taskId}.json`);
     return taskId;
   }
 );
@@ -70,7 +67,7 @@ export const switchCompletionTask = createAsyncThunk(
     const { getState } = thunkAPI;
     const initialTask = selectTaskById(getState() as RootState, taskId);
     const newComplete = initialTask?.completed ? '' : new Date().toISOString();
-    await axios.patch<ITask>(`http://localhost:3001/tasks/${taskId}`, {
+    await axiosIns.patch<ITask>(`/tasks/${taskId}.json`, {
       completed: newComplete,
     });
     return {
@@ -94,7 +91,7 @@ export const updateTask = createAsyncThunk(
         if (!initialTags.includes(tag)) dispatch(addNewTag(new Tag(tag)));
       });
     }
-    await axios.patch<ITask>(`http://localhost:3001/tasks/${taskId}`, changes);
+    await axiosIns.patch<ITask>(`/tasks/${taskId}.json`, changes);
     return { id: taskId, changes };
   }
 );
@@ -165,7 +162,7 @@ export const countTasksByFilter = createSelector(
       default:
         return tasks.filter(
           (task) =>
-            task.tags.includes(filter) && !task.completed && !task.deleted
+            task.tags?.includes(filter) && !task.completed && !task.deleted
         ).length;
     }
   }
@@ -176,7 +173,7 @@ export const selectTaggedTasks = createSelector(
   (tasks, activeTags) => {
     return activeTags.length
       ? tasks.filter((task) =>
-          activeTags.some((tag: string) => task.tags.includes(tag))
+          activeTags.some((tag: string) => task.tags?.includes(tag))
         )
       : tasks;
   }

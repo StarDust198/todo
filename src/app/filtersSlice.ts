@@ -5,7 +5,8 @@ import {
   createEntityAdapter,
   EntityState,
 } from '@reduxjs/toolkit';
-import axios from 'axios';
+
+import { axiosIns } from './axiosIns';
 import { ITag } from '../models/Tag';
 import { LoadingStates } from '../models/LoadingStates';
 import { Filters } from '../models/Filters';
@@ -30,14 +31,14 @@ const initialState: filtersState = filtersAdapter.getInitialState({
 });
 
 export const fetchTags = createAsyncThunk('filters/fetchTags', async () => {
-  const response = await axios.get<ITag[]>('http://localhost:3001/tags');
-  return response.data;
+  const response = await axiosIns.get<ITag[]>('/tags.json');
+  return response.data || [];
 });
 
 export const addNewTag = createAsyncThunk(
   'filters/addNewTag',
   async (tag: ITag) => {
-    const response = await axios.post<ITag>('http://localhost:3001/tags', tag);
+    const response = await axiosIns.put<ITag>(`/tags/${tag.id}.json`, tag);
     return response.data;
   }
 );
@@ -45,7 +46,7 @@ export const addNewTag = createAsyncThunk(
 export const deleteTag = createAsyncThunk(
   'filters/deleteTag',
   async (tagName: string) => {
-    await axios.delete(`http://localhost:3001/tags/${tagName}`);
+    await axiosIns.delete(`/tags/${tagName}.json`);
     return tagName;
   }
 );

@@ -85,11 +85,13 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
     if (tgt.value && !existingTags.includes(tgt.value))
       dispatch(addNewTag(new Tag(tgt.value)));
     if (tgt.value && task)
-      if (!task.tags.includes(tgt.value)) {
+      if (!task.tags?.includes(tgt.value)) {
         dispatch(
           updateTask({
             taskId: task.id,
-            changes: { tags: [...task.tags, tgt.value] },
+            changes: {
+              tags: task.tags ? [...task.tags, tgt.value] : [tgt.value],
+            },
           })
         );
       } else {
@@ -161,7 +163,7 @@ const TaskDetails: FC<TaskDetailsProps> = () => {
           }
         />
         <div className="py-2 flex flex-wrap gap-2">
-          {task.tags.map((item) => (
+          {task.tags?.map((item) => (
             <TagComponent
               tagName={item}
               key={item}
