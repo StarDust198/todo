@@ -47,11 +47,11 @@ const AddTaskInput = () => {
   };
 
   return (
-    <div className="flex border-b border-slate-500 py-2">
+    <div className="addtask flex border-b border-slate-500 py-2">
       <input
         type="text"
         className="bg-slate-700 focus:outline-none w-2/3 mr-4"
-        placeholder="Add new task"
+        placeholder="Add new task (with #tags)"
         onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => {
           if (e.key === 'Enter') {
             onTaskAdd();
